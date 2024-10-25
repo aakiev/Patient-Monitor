@@ -28,15 +28,25 @@ namespace PatientMonitor
 
         public double NextSample(double timeIndex)
         {
-            const double HzToBeatsPerMin = 60.0;
-            double sample;
+            double sample = 0.0;
 
-            sample = Math.Cos(2 * Math.PI * (frequency / HzToBeatsPerMin) * timeIndex);
-            sample *= amplitude;
+            // Grundwelle (Grundfrequenz) berechnen
+            sample += amplitude * Math.Sin(2 * Math.PI * frequency * timeIndex);
 
+            // Hinzufügen der Harmonischen
+            for (int h = 1; h <= harmonics; h++)
+            {
+                // Die Amplitude jeder harmonischen Frequenz wird reduziert, um die Wellen realistischer zu machen
+                double harmonicAmplitude = amplitude / (h + 1); // Reduziere die Amplitude der höheren Harmonischen
+                double harmonicFrequency = frequency * (h + 1); // Frequenz der Harmonischen ist ein Vielfaches
 
-            return (sample);
+                // Hinzufügen der harmonischen Frequenz
+                sample += harmonicAmplitude * Math.Sin(2 * Math.PI * harmonicFrequency * timeIndex);
+            }
+
+            return sample;
         }
+
     }
 }
 

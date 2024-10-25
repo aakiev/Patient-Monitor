@@ -46,23 +46,27 @@ namespace PatientMonitor
             lineSeriesECG.ItemsSource = dataPoints; // Bind the series to the data points
 
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(1); // Set timer to tick every second
+            timer.Interval = TimeSpan.FromMilliseconds(10); // Set timer to tick every second
             timer.Tick += Timer_Tick;
         }
         private void Timer_Tick(object sender, EventArgs e)
         {
-            // Generate a new data point
+            // Berechne die aktuelle Zeit in Sekunden
+            double currentTime = index / 5000.0; // Da der Timer alle 1 ms tickt (1000 Ticks pro Sekunde)
+
+            // Erzeuge einen neuen Datenpunkt
             if (patient != null)
             {
-                dataPoints.Add(new KeyValuePair<int, double>(index++, patient.NextSample(index)));
+                dataPoints.Add(new KeyValuePair<int, double>(index++, patient.NextSample(currentTime)));
             }
 
-            // Optional: Remove old points to keep the chart clean
-            if (dataPoints.Count > 200) // Maximum number of points
+            // Optional: Entferne alte Punkte, um das Diagramm sauber zu halten
+            if (dataPoints.Count > 200) // Maximale Anzahl der Punkte
             {
-                dataPoints.RemoveAt(0); // Remove the oldest point
+                dataPoints.RemoveAt(0); // Entferne den ältesten Punkt
             }
         }
+
 
         private void PatientNameTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
