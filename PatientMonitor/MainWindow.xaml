@@ -23,17 +23,42 @@
             </toolkit:LineSeries>
         </toolkit:Chart>
         <GroupBox x:Name="ECGgroupBox" Header="ECG" Width="380" Height="250" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,60" FontSize="16">
+            <Grid>
+                <Slider x:Name="SliderAmplitudeValue" Minimum="0" Maximum="10" Value="5" Margin="10,71,8,0" Height="20" Width="350" VerticalAlignment="Top" ValueChanged="SliderAmplitudeValue_ValueChanged"/>
+                <TextBlock x:Name="TextBlockValuesMV" HorizontalAlignment="Left" Margin="10,45,0,0" TextWrapping="Wrap" Text="0 mV         2.5 mV       5 mV       7.5 mV       10 mV" VerticalAlignment="Top" Width="348"/>
+                <TextBlock x:Name="TextBlockAmplitude" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Amplitude (mV)" VerticalAlignment="Top" Width="114"/>
+                <TextBlock x:Name="TextBlockFrequency" Margin="77,96,72,102" TextWrapping="Wrap" Text="ECG Frequency (cycles/minute)"/>
+                <TextBox x:Name="TextBoxFrequencyValue" HorizontalAlignment="Left" Height="23" Margin="111,120,0,0" TextWrapping="Wrap" Text="Enter value (50-150)" VerticalAlignment="Top" Width="149" TextChanged="TextBoxFrequencyValue_TextChanged" PreviewTextInput="TextBoxFrequencyValue_PreviewTextInput" GotFocus="TextBoxFrequencyValue_GotFocus" LostFocus="TextBoxFrequencyValue_LostFocus"/>
+                <TextBlock x:Name="TextBlockHarmonics" HorizontalAlignment="Left" Margin="144,155,0,0" TextWrapping="Wrap" Text="Harmonics : " VerticalAlignment="Top"/>
+            </Grid>
 
-            <Slider Minimum="0" Maximum="10" Value="5" Margin="0,0,0,10" Height="20" Width="350" VerticalAlignment="Bottom"/>
 
         </GroupBox>
         <GroupBox x:Name="PatientGroupBox" Header="Input Patient" Width="380" Height="250" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="14,0,0,60" FontSize="16">
+            <!-- Layout-Container hinzufügen, um mehrere Elemente zu erlauben -->
+            <Grid>
+                <DatePicker x:Name="DatePickerDate" HorizontalAlignment="Center" Margin="198,32,10,104" SelectedDateChanged="DatePickerDate_SelectedDateChanged" />
+                <Button x:Name="buttonCreatePatient" Content="Create Patient" Width="120" Margin="124,156,124,36" Height="30" Click="buttonCreatePatient_Click"/>
+                <Button x:Name="buttonUpdatePatient" Content="Update Patient" Width="120" Margin="0,190,0,0" Height="30" IsEnabled="False" Click="buttonUpdatePatient_Click"/>
+                <TextBlock x:Name="PatientNameTextBlock" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="Patient Name :" VerticalAlignment="Top" Width="120"/>
+                <TextBox x:Name="PatientNameTextBox" HorizontalAlignment="Left" Height="23" Margin="10,35,0,0" TextWrapping="Wrap" Text="Enter name here" VerticalAlignment="Top" Width="153" GotFocus="PatientNameTextBox_GotFocus" LostFocus="PatientNameTextBox_LostFocus" TextChanged="PatientNameTextBox_TextChanged" />
 
-            <Button x:Name="buttonCreatePatient" Content="Create Patient" Width="120" Margin="0,20,0,0" Height="30"/>
-
+                <TextBlock x:Name="PatientAgeTextBlock" HorizontalAlignment="Left" Height="23" Margin="10,70,0,0" TextWrapping="Wrap" Text="Patient Age :" VerticalAlignment="Top" Width="120"/>
+                <TextBox x:Name="PatientAgeTextBox" HorizontalAlignment="Left" Height="23" Margin="10,95,0,0" TextWrapping="Wrap" Text="Enter age here" VerticalAlignment="Top" Width="153" GotFocus="PatientNameTextBox_GotFocus" LostFocus="PatientAgeTextBox_LostFocus" PreviewTextInput="PatientAgeTextBox_PreviewTextInput" TextChanged="PatientAgeTextBox_TextChanged"/>
+            </Grid>
         </GroupBox>
-        <Button x:Name="buttonParameter" Content="Start Parameters" HorizontalAlignment="Left" Margin="500,680,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <Button x:Name="buttonQuit" Content="Stop" HorizontalAlignment="Left" Margin="650,680,0,0" VerticalAlignment="Top" FontSize="16"/>
+
+        <Button x:Name="buttonStartSimulation" Content="Start Simulation" HorizontalAlignment="Left" Margin="500,675,0,0" VerticalAlignment="Top" FontSize="16" IsEnabled="False" Click="buttonStartSimulation_Click"/>
+        <Button x:Name="buttonQuit" Content="Stop" HorizontalAlignment="Left" Margin="650,675,0,0" VerticalAlignment="Top" FontSize="16" Click="buttonQuit_Click"/>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
+        <ComboBox x:Name="ComboBoxHarmonics" HorizontalAlignment="Left" Margin="548,610,0,0" VerticalAlignment="Top" Width="80" SelectionChanged="ComboBoxHarmonics_SelectionChanged">
+            <ComboBoxItem Content="1"/>
+            <ComboBoxItem Content="2"/>
+            <ComboBoxItem Content="3"/>
+            <ComboBoxItem Content="4"/>
+            <ComboBoxItem Content="5"/>
+        </ComboBox>
+
     </Grid>
 </Window>
 
