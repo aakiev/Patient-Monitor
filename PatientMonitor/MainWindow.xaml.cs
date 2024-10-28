@@ -34,9 +34,9 @@ namespace PatientMonitor
         string patientNameTemp;
         int patientAgeTemp;
         DateTime dateTemp;
-        double frequencyTemp;
-        int harmonicsTemp;
-        double amplitudeValue;
+        double frequencyTemp = 0;
+        int harmonicsTemp = 1;
+        double amplitudeValue = 5;
         bool wasPatientCreated = false;
 
         public MainWindow()
@@ -46,25 +46,26 @@ namespace PatientMonitor
             lineSeriesECG.ItemsSource = dataPoints; // Bind the series to the data points
 
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(10); // Set timer to tick every second
+            timer.Interval = TimeSpan.FromMilliseconds(1); // Set timer to tick every ms
             timer.Tick += Timer_Tick;
         }
         private void Timer_Tick(object sender, EventArgs e)
         {
             // Berechne die aktuelle Zeit in Sekunden
-            double currentTime = index / 5000.0; // Da der Timer alle 1 ms tickt (1000 Ticks pro Sekunde)
+            double currentTimeInSeconds = index / 6000.0; // 6000 der perfekte Wert damit die Ausgabe wirklich echte ms sind
 
             // Erzeuge einen neuen Datenpunkt
             if (patient != null)
             {
-                dataPoints.Add(new KeyValuePair<int, double>(index++, patient.NextSample(currentTime)));
+                dataPoints.Add(new KeyValuePair<int, double>(index++, patient.NextSample(currentTimeInSeconds)));
             }
 
-            // Optional: Entferne alte Punkte, um das Diagramm sauber zu halten
+            // Entferne alte Punkte, um das Diagramm sauber zu halten
             if (dataPoints.Count > 200) // Maximale Anzahl der Punkte
             {
                 dataPoints.RemoveAt(0); // Entferne den ältesten Punkt
             }
+
         }
 
 
@@ -122,9 +123,11 @@ namespace PatientMonitor
 
         private void TextBoxFrequencyValue_TextChanged(object sender, TextChangedEventArgs e)
         {
+
             double.TryParse(TextBoxFrequencyValue.Text, out double parsedFrequency);
             frequencyTemp = parsedFrequency;
-            if (wasPatientCreated) patient.ECGFrequency = frequencyTemp;
+            if (wasPatientCreated) { patient.ECGFrequency = frequencyTemp; }
+
         }
 
         private void TextBoxFrequencyValue_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -143,9 +146,10 @@ namespace PatientMonitor
         {
             if(TextBoxFrequencyValue.Text == "")
             {
-                TextBoxFrequencyValue.Text = "Enter value (50-150)";
+                TextBoxFrequencyValue.Text = "0";
                 TextBoxFrequencyValue.Foreground = Brushes.Red;
             }
+
         }
 
         private void ComboBoxHarmonics_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -162,11 +166,9 @@ namespace PatientMonitor
 
         private void buttonCreatePatient_Click(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(PatientNameTextBox.Text) &&
-                !string.IsNullOrWhiteSpace(PatientAgeTextBox.Text) &&
-                DatePickerDate.SelectedDate.HasValue &&
-                !string.IsNullOrWhiteSpace(TextBoxFrequencyValue.Text) &&
-                ComboBoxHarmonics.SelectedIndex != -1)
+            bool ageValid = int.TryParse(PatientAgeTextBox.Text, out int _);
+
+            if (PatientNameTextBox.Text != "Enter name here" && !string.IsNullOrWhiteSpace(PatientNameTextBox.Text) && ageValid && DatePickerDate.SelectedDate.HasValue)
             {
                 patient = new Patient(patientNameTemp, dateTemp, patientAgeTemp, amplitudeValue, frequencyTemp, harmonicsTemp);
                 MessageBox.Show("Patient " + patientNameTemp + " was created!");
@@ -178,11 +180,15 @@ namespace PatientMonitor
             {
                 MessageBox.Show("Füllen Sie alle Felder aus!");
             }
+            
         }
 
         private void buttonStartSimulation_Click(object sender, RoutedEventArgs e)
         {
             timer.Start();
+            SliderAmplitudeValue.IsEnabled = true;
+            TextBoxFrequencyValue.IsEnabled = true;
+            ComboBoxHarmonics.IsEnabled = true;
         }
 
         private void buttonQuit_Click(object sender, RoutedEventArgs e)

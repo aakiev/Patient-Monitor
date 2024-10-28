@@ -30,22 +30,22 @@ namespace PatientMonitor
         {
             double sample = 0.0;
 
-            // Grundwelle (Grundfrequenz) berechnen
+            // Grundfrequenz berechnen (erste harmonische Komponente)
             sample += amplitude * Math.Sin(2 * Math.PI * frequency * timeIndex);
 
-            // Hinzufügen der Harmonischen
+            // Hinzufügen der zusätzlichen harmonischen Komponenten
             for (int h = 1; h <= harmonics; h++)
             {
-                // Die Amplitude jeder harmonischen Frequenz wird reduziert, um die Wellen realistischer zu machen
-                double harmonicAmplitude = amplitude / (h + 1); // Reduziere die Amplitude der höheren Harmonischen
-                double harmonicFrequency = frequency * (h + 1); // Frequenz der Harmonischen ist ein Vielfaches
+                double harmonicFrequency = frequency * (h + 1); // Die Frequenz der harmonischen Komponente als Vielfaches
+                double harmonicAmplitude = amplitude / (h + 1); // Die Amplitude wird proportional zur harmonischen Ordnung reduziert
 
-                // Hinzufügen der harmonischen Frequenz
+                // Hinzufügen der harmonischen Schwingungen
                 sample += harmonicAmplitude * Math.Sin(2 * Math.PI * harmonicFrequency * timeIndex);
             }
 
             return sample;
         }
+
 
     }
 }
