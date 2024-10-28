@@ -35,7 +35,7 @@
 
         </GroupBox>
         <GroupBox x:Name="PatientGroupBox" Header="Input Patient" Width="380" Height="250" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="14,0,0,60" FontSize="16">
-            <!-- Layout-Container hinzufügen, um mehrere Elemente zu erlauben -->
+            <!-- add Grid, to allow multiple elemnts -->
             <Grid>
                 <DatePicker x:Name="DatePickerDate" HorizontalAlignment="Center" Margin="198,32,10,104" SelectedDateChanged="DatePickerDate_SelectedDateChanged" />
                 <Button x:Name="buttonCreatePatient" Content="Create Patient" Width="120" Margin="124,156,124,36" Height="30" Click="buttonCreatePatient_Click"/>
@@ -55,8 +55,6 @@
             <ComboBoxItem Content="1"/>
             <ComboBoxItem Content="2"/>
             <ComboBoxItem Content="3"/>
-            <ComboBoxItem Content="4"/>
-            <ComboBoxItem Content="5"/>
         </ComboBox>
 
     </Grid>

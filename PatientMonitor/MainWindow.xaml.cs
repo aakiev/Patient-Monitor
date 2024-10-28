@@ -21,9 +21,6 @@ using System.Windows.Threading;
 
 namespace PatientMonitor
 {
-    /// <summary>
-    /// Interaktionslogik für MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private ObservableCollection<KeyValuePair<int, double>> dataPoints;
@@ -46,24 +43,24 @@ namespace PatientMonitor
             lineSeriesECG.ItemsSource = dataPoints; // Bind the series to the data points
 
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(1); // Set timer to tick every ms
+            timer.Interval = TimeSpan.FromMilliseconds(1); // Set timer to tick every 1 ms
             timer.Tick += Timer_Tick;
         }
         private void Timer_Tick(object sender, EventArgs e)
         {
-            // Berechne die aktuelle Zeit in Sekunden
-            double currentTimeInSeconds = index / 6000.0; // 6000 der perfekte Wert damit die Ausgabe wirklich echte ms sind
+            // Real time calculation
+            double currentTimeInSeconds = index / 6000.0; // 6000 perfect value for 50hz really beeing 50Hz
 
-            // Erzeuge einen neuen Datenpunkt
+            // Generate datapoint
             if (patient != null)
             {
                 dataPoints.Add(new KeyValuePair<int, double>(index++, patient.NextSample(currentTimeInSeconds)));
             }
 
-            // Entferne alte Punkte, um das Diagramm sauber zu halten
-            if (dataPoints.Count > 200) // Maximale Anzahl der Punkte
+            // Delete datapoints to clear the diagram
+            if (dataPoints.Count > 200) // Max count of points
             {
-                dataPoints.RemoveAt(0); // Entferne den ältesten Punkt
+                dataPoints.RemoveAt(0); // Delete last point
             }
 
         }
@@ -178,7 +175,7 @@ namespace PatientMonitor
             }
             else
             {
-                MessageBox.Show("Füllen Sie alle Felder aus!");
+                MessageBox.Show("Fill all boxes!");
             }
             
         }

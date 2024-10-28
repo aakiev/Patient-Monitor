@@ -20,7 +20,7 @@ namespace PatientMonitor
 
         public double NextSample(double timeIndex)
         {
-            return ecg.NextSample(timeIndex);               //Hier geben wir über die Klasse Patient Zuriff auf die Methode der Klasse ECG
+            return ecg.NextSample(timeIndex);               
         }
 
         public Patient(string patientName, DateTime dateOfStudy, int age, double amplitude, double frequency, int harmonics)

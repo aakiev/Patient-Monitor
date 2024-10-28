@@ -16,7 +16,7 @@ namespace PatientMonitor
 
         //Properties
         public double Amplitude { get => amplitude; set => amplitude = value; }
-        public double Frequency { get => frequency ; set => frequency = value; }
+        public double Frequency { get => frequency; set => frequency = value; }
         public int Harmonics { get => harmonics; set => harmonics = value; }
 
         public ECG(double amplitude, double frequency, int harmonics)
@@ -30,21 +30,27 @@ namespace PatientMonitor
         {
             double sample = 0.0;
 
-            // Grundfrequenz berechnen (erste harmonische Komponente)
+            // Grundwelle berechnen (Basisfrequenz)
             sample += amplitude * Math.Sin(2 * Math.PI * frequency * timeIndex);
 
-            // Hinzufügen der zusätzlichen harmonischen Komponenten
+            // Zusätzliche Wellen basierend auf der Anzahl der „Harmonischen“
             for (int h = 1; h <= harmonics; h++)
             {
-                double harmonicFrequency = frequency * (h + 1); // Die Frequenz der harmonischen Komponente als Vielfaches
-                double harmonicAmplitude = amplitude / (h + 1); // Die Amplitude wird proportional zur harmonischen Ordnung reduziert
+                // Zusätzliche Frequenzkomponente als ungerades Vielfaches der Grundfrequenz
+                double additionalFrequency = (2 * h + 1) * frequency;
 
-                // Hinzufügen der harmonischen Schwingungen
-                sample += harmonicAmplitude * Math.Sin(2 * Math.PI * harmonicFrequency * timeIndex);
+                // Kleinere Amplitude für jede zusätzliche Welle
+                double additionalAmplitude = amplitude / (2 * h + 1);
+
+                // Füge die zusätzliche Welle hinzu
+                sample += additionalAmplitude * Math.Sin(2 * Math.PI * additionalFrequency * timeIndex);
             }
 
             return sample;
         }
+
+
+
 
 
     }
