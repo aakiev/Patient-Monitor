@@ -30,19 +30,19 @@ namespace PatientMonitor
         {
             double sample = 0.0;
 
-            // Grundwelle berechnen (Basisfrequenz)
+            // fundemental wave (Base frequency)
             sample += amplitude * Math.Sin(2 * Math.PI * frequency * timeIndex);
 
-            // Zusätzliche Wellen basierend auf der Anzahl der „Harmonischen“
+            // Additional waves based on harmonics count
             for (int h = 1; h <= harmonics; h++)
             {
-                // Zusätzliche Frequenzkomponente als ungerades Vielfaches der Grundfrequenz
+                // Additional frequency component as an odd multiple of the base frequency
                 double additionalFrequency = (2 * h + 1) * frequency;
 
-                // Kleinere Amplitude für jede zusätzliche Welle
+                // Lower magnitude for every additional wave
                 double additionalAmplitude = amplitude / (2 * h + 1);
 
-                // Füge die zusätzliche Welle hinzu
+                // Addition of the wave
                 sample += additionalAmplitude * Math.Sin(2 * Math.PI * additionalFrequency * timeIndex);
             }
 
