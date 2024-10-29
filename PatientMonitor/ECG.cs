@@ -31,19 +31,16 @@ namespace PatientMonitor
             double sample = 0.0;
 
             // fundemental wave (Base frequency)
-            sample += amplitude * Math.Sin(2 * Math.PI * frequency * timeIndex);
+            sample = amplitude * Math.Cos(2 * Math.PI * frequency * timeIndex);
 
             // Additional waves based on harmonics count
-            for (int h = 1; h <= harmonics; h++)
+            switch (harmonics)
             {
-                // Additional frequency component as an odd multiple of the base frequency
-                double additionalFrequency = (2 * h + 1) * frequency;
-
-                // Lower magnitude for every additional wave
-                double additionalAmplitude = amplitude / (2 * h + 1);
-
-                // Addition of the wave
-                sample += additionalAmplitude * Math.Sin(2 * Math.PI * additionalFrequency * timeIndex);
+                case 1: sample += amplitude/2 * Math.Cos(2 * Math.PI * 2 * frequency * timeIndex); break;
+                case 2: sample += amplitude/3 * Math.Cos(2 * Math.PI * 3 * frequency * timeIndex) + amplitude/2 * Math.Cos(2 * Math.PI * 2 * frequency * timeIndex); break;
+                case 3: sample += amplitude/4 * Math.Cos(2 * Math.PI * 4 * frequency * timeIndex) + amplitude/3 * Math.Cos(2 * Math.PI * 3 * frequency * timeIndex) 
+                        + amplitude/2 * Math.Cos(2 * Math.PI * 2 * frequency * timeIndex); break;
+                default: break;
             }
 
             return sample;
