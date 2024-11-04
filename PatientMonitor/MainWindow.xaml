@@ -27,9 +27,16 @@
                 <Slider x:Name="SliderAmplitudeValue" Minimum="0" Maximum="10" Value="5" Margin="10,71,8,0" Height="20" Width="350" VerticalAlignment="Top" ValueChanged="SliderAmplitudeValue_ValueChanged" IsEnabled="False"/>
                 <TextBlock x:Name="TextBlockValuesMV" HorizontalAlignment="Left" Margin="10,45,0,0" TextWrapping="Wrap" Text="0 mV         2.5 mV       5 mV       7.5 mV       10 mV" VerticalAlignment="Top" Width="348"/>
                 <TextBlock x:Name="TextBlockAmplitude" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Amplitude (mV)" VerticalAlignment="Top" Width="114"/>
-                <TextBlock x:Name="TextBlockFrequency" Margin="77,96,72,102" TextWrapping="Wrap" Text="ECG Frequency (cycles/minute)"/>
-                <TextBox x:Name="TextBoxFrequencyValue" HorizontalAlignment="Left" Height="23" Margin="111,120,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="149" TextChanged="TextBoxFrequencyValue_TextChanged" PreviewTextInput="TextBoxFrequencyValue_PreviewTextInput" GotFocus="TextBoxFrequencyValue_GotFocus" LostFocus="TextBoxFrequencyValue_LostFocus" IsEnabled="False"/>
-                <TextBlock x:Name="TextBlockHarmonics" HorizontalAlignment="Left" Margin="144,155,0,0" TextWrapping="Wrap" Text="Harmonics : " VerticalAlignment="Top"/>
+                <TextBlock x:Name="TextBlockFrequency" Margin="14,96,167,102" TextWrapping="Wrap" Text="Frequency (cycles/minute)"/>
+                <TextBox x:Name="TextBoxFrequencyValue" Height="23" Margin="32,129,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="149" TextChanged="TextBoxFrequencyValue_TextChanged" PreviewTextInput="TextBoxFrequencyValue_PreviewTextInput" GotFocus="TextBoxFrequencyValue_GotFocus" LostFocus="TextBoxFrequencyValue_LostFocus" IsEnabled="False" HorizontalAlignment="Left"/>
+                <TextBlock x:Name="TextBlockHarmonics" HorizontalAlignment="Left" Margin="275,96,0,0" TextWrapping="Wrap" Text="Harmonics" VerticalAlignment="Top"/>
+                <ComboBox x:Name="ComboBoxParameters" Margin="124,191,124,5" SelectedIndex="0" IsEnabled="False" SelectionChanged="ComboBoxParameters_SelectionChanged" IsEnabledChanged="ComboBoxParameters_IsEnabledChanged">
+                    <ComboBoxItem Content="ECG"/>
+                    <ComboBoxItem Content="EEG"/>
+                    <ComboBoxItem Content="EMG"/>
+                    <ComboBoxItem Content="Respiration"/>
+                </ComboBox>
+                <TextBlock x:Name="TextBlock_ComboBoxParameters" Margin="147,170,148,0" TextWrapping="Wrap" Text="Parameter" VerticalAlignment="Top"/>
             </Grid>
 
 
@@ -51,7 +58,7 @@
         <Button x:Name="buttonStartSimulation" Content="Start Simulation" HorizontalAlignment="Left" Margin="500,675,0,0" VerticalAlignment="Top" FontSize="16" IsEnabled="False" Click="buttonStartSimulation_Click"/>
         <Button x:Name="buttonQuit" Content="Stop" HorizontalAlignment="Left" Margin="650,675,0,0" VerticalAlignment="Top" FontSize="16" Click="buttonQuit_Click"/>
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
-        <ComboBox x:Name="ComboBoxHarmonics" HorizontalAlignment="Left" Margin="548,610,0,0" VerticalAlignment="Top" Width="80" SelectionChanged="ComboBoxHarmonics_SelectionChanged" SelectedIndex="0" IsEnabled="False">
+        <ComboBox x:Name="ComboBoxHarmonics" HorizontalAlignment="Left" Margin="674,552,0,0" VerticalAlignment="Top" Width="80" SelectionChanged="ComboBoxHarmonics_SelectionChanged" SelectedIndex="0" IsEnabled="False">
             <ComboBoxItem Content="1"/>
             <ComboBoxItem Content="2"/>
             <ComboBoxItem Content="3"/>

@@ -27,6 +27,7 @@ namespace PatientMonitor
         private DispatcherTimer timer;
         private int index = 0;
         Patient patient;
+        MonitorConstants.Parameter parameter = MonitorConstants.Parameter.ECG;
 
         string patientNameTemp;
         int patientAgeTemp;
@@ -54,7 +55,7 @@ namespace PatientMonitor
             // Generate datapoint
             if (patient != null)
             {
-                dataPoints.Add(new KeyValuePair<int, double>(index++, patient.NextSample(currentTimeInSeconds)));
+                dataPoints.Add(new KeyValuePair<int, double>(index++, patient.NextSample(currentTimeInSeconds, parameter)));
             }
 
             // Delete datapoints to clear the diagram
@@ -123,7 +124,14 @@ namespace PatientMonitor
 
             double.TryParse(TextBoxFrequencyValue.Text, out double parsedFrequency);
             frequencyTemp = parsedFrequency;
-            if (wasPatientCreated) { patient.ECGFrequency = frequencyTemp; }
+            if (wasPatientCreated)
+            {
+                switch (parameter)
+                {
+                    case MonitorConstants.Parameter.ECG: patient.ECGFrequency = frequencyTemp; break;
+                    case MonitorConstants.Parameter.EMG: patient.EMGFrequency = frequencyTemp; break;
+                }
+            }
 
         }
 
@@ -158,7 +166,14 @@ namespace PatientMonitor
         private void SliderAmplitudeValue_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             amplitudeValue = SliderAmplitudeValue.Value;
-            if(wasPatientCreated) patient.ECGAmplitude = amplitudeValue;
+            if (wasPatientCreated)
+            {
+                switch (parameter)
+                {
+                    case MonitorConstants.Parameter.ECG: patient.ECGAmplitude = SliderAmplitudeValue.Value; break;
+                    case MonitorConstants.Parameter.EMG: patient.EMGAmplitude = SliderAmplitudeValue.Value; break;
+                }
+            }
         }
 
         private void buttonCreatePatient_Click(object sender, RoutedEventArgs e)
@@ -186,6 +201,7 @@ namespace PatientMonitor
             SliderAmplitudeValue.IsEnabled = true;
             TextBoxFrequencyValue.IsEnabled = true;
             ComboBoxHarmonics.IsEnabled = true;
+            ComboBoxParameters.IsEnabled = true;
         }
 
         private void buttonQuit_Click(object sender, RoutedEventArgs e)
@@ -203,6 +219,42 @@ namespace PatientMonitor
             patient.ECGFrequency = frequencyTemp;
             patient.ECGHarmonics = harmonicsTemp;
             
+        }
+
+
+        private void ComboBoxParameters_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            parameter = (MonitorConstants.Parameter)ComboBoxParameters.SelectedIndex;
+            if(parameter == MonitorConstants.Parameter.ECG)
+            {
+                ComboBoxHarmonics.IsEnabled = true;
+            }
+            else
+            {
+                ComboBoxHarmonics.IsEnabled = false;
+            }
+
+            if (wasPatientCreated)
+            {
+                switch (parameter)
+                {
+                    case MonitorConstants.Parameter.ECG: patient.ECGFrequency = frequencyTemp; break;
+                    case MonitorConstants.Parameter.EMG: patient.EMGFrequency = frequencyTemp; break;
+                }
+            }
+        }
+
+        private void ComboBoxParameters_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            ComboBox combo = sender as ComboBox;
+            if (combo.IsEnabled)
+            {
+                combo.SelectionChanged += ComboBoxParameters_SelectionChanged;
+            }
+            else
+            {
+                combo.SelectionChanged -= ComboBoxParameters_SelectionChanged;
+            }
         }
     }
 }
