@@ -11,7 +11,7 @@ namespace PatientMonitor
 
         //Variablen
         private double amplitude = 0.0;
-        private double frequency = 0;
+        private double frequency = 0.0;
         private int harmonics = 1;
 
         //Properties

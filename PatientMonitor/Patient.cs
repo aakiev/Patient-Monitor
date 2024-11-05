@@ -10,7 +10,10 @@ namespace PatientMonitor
     {
 
         ECG ecg;
+        EEG eeg;
         EMG emg;
+        Respiration respiration;
+        
 
         private string patientName;
         private DateTime dateOfStudy;
@@ -27,9 +30,9 @@ namespace PatientMonitor
             switch (parameter)
             {
                 case MonitorConstants.Parameter.ECG: NextSample = ecg.NextSample(timeIndex); break;
-                case MonitorConstants.Parameter.EEG: break;     //Fehlt die klasse noch
+                case MonitorConstants.Parameter.EEG: NextSample = eeg.NextSample(timeIndex); break;
                 case MonitorConstants.Parameter.EMG: NextSample = emg.NextSample(timeIndex); break;
-                case MonitorConstants.Parameter.Respiration: break; //Fehlt die klasse noch
+                case MonitorConstants.Parameter.Respiration: NextSample = respiration.NextSample(timeIndex); break;
                 default: break;
 
             }
@@ -40,7 +43,10 @@ namespace PatientMonitor
         public Patient(string patientName, DateTime dateOfStudy, int age, double amplitude, double frequency, int harmonics)
         {
             ecg = new ECG(amplitude, frequency, harmonics);
+            eeg = new EEG(amplitude, frequency);
             emg = new EMG(amplitude, frequency);
+            respiration = new Respiration(amplitude, frequency);
+
 
             this.patientName = patientName;
             this.dateOfStudy = dateOfStudy;
@@ -53,9 +59,20 @@ namespace PatientMonitor
         public double ECGFrequency { get => ecg.Frequency; set => ecg.Frequency = value; }
         public int ECGHarmonics { get => ecg.Harmonics; set => ecg.Harmonics = value; }
 
+
+        //Properties for EMG
+        public double EEGAmplitude { get => eeg.Amplitude; set => eeg.Amplitude = value; }
+        public double EEGFrequency { get => eeg.Frequency; set => eeg.Frequency = value; }
+
         //Properties for EMG
         public double EMGAmplitude { get => emg.Amplitude; set => emg.Amplitude = value; }
         public double EMGFrequency { get => emg.Frequency; set => emg.Frequency = value; }
+
+
+        //Properties for Respiration
+        public double RespirationAmplitude { get => respiration.Amplitude; set => respiration.Amplitude = value; }
+        public double RespirationFrequency { get => respiration.Frequency; set => respiration.Frequency = value; }
+
 
     }
 }

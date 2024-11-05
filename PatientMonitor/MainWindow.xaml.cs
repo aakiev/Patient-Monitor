@@ -130,6 +130,8 @@ namespace PatientMonitor
                 {
                     case MonitorConstants.Parameter.ECG: patient.ECGFrequency = frequencyTemp; break;
                     case MonitorConstants.Parameter.EMG: patient.EMGFrequency = frequencyTemp; break;
+                    case MonitorConstants.Parameter.EEG: patient.EEGFrequency = frequencyTemp; break;
+                    case MonitorConstants.Parameter.Respiration: patient.RespirationFrequency = frequencyTemp; break;
                 }
             }
 
@@ -172,6 +174,8 @@ namespace PatientMonitor
                 {
                     case MonitorConstants.Parameter.ECG: patient.ECGAmplitude = SliderAmplitudeValue.Value; break;
                     case MonitorConstants.Parameter.EMG: patient.EMGAmplitude = SliderAmplitudeValue.Value; break;
+                    case MonitorConstants.Parameter.EEG: patient.EEGAmplitude = SliderAmplitudeValue.Value; break;
+                    case MonitorConstants.Parameter.Respiration: patient.RespirationAmplitude = SliderAmplitudeValue.Value; break;
                 }
             }
         }
@@ -247,6 +251,14 @@ namespace PatientMonitor
                                                          TextBoxFrequencyValue.Text = patient.EMGFrequency.ToString();
                                                          if (patient.EMGFrequency == 0.0) { patient.EMGFrequency = frequencyTemp; }
                                                          break;
+                    case MonitorConstants.Parameter.EEG: SliderAmplitudeValue.Value = patient.EEGAmplitude;
+                                                         TextBoxFrequencyValue.Text = patient.EEGFrequency.ToString();
+                                                         if (patient.EEGFrequency == 0.0) { patient.EEGFrequency = frequencyTemp; }
+                                                         break;
+                    case MonitorConstants.Parameter.Respiration: SliderAmplitudeValue.Value = patient.EEGAmplitude;
+                                                                 TextBoxFrequencyValue.Text = patient.EEGFrequency.ToString();
+                                                                 if (patient.EEGFrequency == 0.0) { patient.EEGFrequency = frequencyTemp; }
+                                                                 break;
                 }
             }
         }
