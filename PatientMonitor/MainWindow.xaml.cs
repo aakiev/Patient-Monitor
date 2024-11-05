@@ -255,9 +255,9 @@ namespace PatientMonitor
                                                          TextBoxFrequencyValue.Text = patient.EEGFrequency.ToString();
                                                          if (patient.EEGFrequency == 0.0) { patient.EEGFrequency = frequencyTemp; }
                                                          break;
-                    case MonitorConstants.Parameter.Respiration: SliderAmplitudeValue.Value = patient.EEGAmplitude;
-                                                                 TextBoxFrequencyValue.Text = patient.EEGFrequency.ToString();
-                                                                 if (patient.EEGFrequency == 0.0) { patient.EEGFrequency = frequencyTemp; }
+                    case MonitorConstants.Parameter.Respiration: SliderAmplitudeValue.Value = patient.RespirationAmplitude;
+                                                                 TextBoxFrequencyValue.Text = patient.RespirationFrequency.ToString();
+                                                                 if (patient.RespirationFrequency == 0.0) { patient.RespirationFrequency = frequencyTemp; }
                                                                  break;
                 }
             }

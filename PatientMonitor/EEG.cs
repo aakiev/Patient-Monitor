@@ -24,7 +24,19 @@ namespace PatientMonitor
 
         public double NextSample(double timeIndex)
         {
-            return 1;  //Hier bitte die Funktion einfügen
+            double sample = 0.0;
+            double signalLength = 1.0 / frequency;
+            double stepindex = timeIndex % signalLength;
+
+            if (stepindex <= (signalLength / 2))
+            {
+                sample = -amplitude + (2*amplitude * (1 - Math.Exp(-5.0*(stepindex/(signalLength/2)))));
+            }
+            else
+            {
+                sample = amplitude - (2*amplitude * (1 - Math.Exp(-5.0 * ((stepindex-signalLength/2)/(signalLength / 2)))));
+            }
+            return sample;
         }
 
     }
