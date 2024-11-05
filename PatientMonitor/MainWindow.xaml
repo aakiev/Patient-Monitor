@@ -24,7 +24,7 @@
         </toolkit:Chart>
         <GroupBox x:Name="ECGgroupBox" Header="ECG" Width="380" Height="250" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,60" FontSize="16">
             <Grid>
-                <Slider x:Name="SliderAmplitudeValue" Minimum="0" Maximum="10" Value="5" Margin="10,71,8,0" Height="20" Width="350" VerticalAlignment="Top" ValueChanged="SliderAmplitudeValue_ValueChanged" IsEnabled="False"/>
+                <Slider x:Name="SliderAmplitudeValue" Minimum="0" Maximum="10" Value="0" Margin="10,71,8,0" Height="20" Width="350" VerticalAlignment="Top" ValueChanged="SliderAmplitudeValue_ValueChanged" IsEnabled="False"/>
                 <TextBlock x:Name="TextBlockValuesMV" HorizontalAlignment="Left" Margin="10,45,0,0" TextWrapping="Wrap" Text="0 mV         2.5 mV       5 mV       7.5 mV       10 mV" VerticalAlignment="Top" Width="348"/>
                 <TextBlock x:Name="TextBlockAmplitude" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Amplitude (mV)" VerticalAlignment="Top" Width="114"/>
                 <TextBlock x:Name="TextBlockFrequency" Margin="14,96,167,102" TextWrapping="Wrap" Text="Frequency (cycles/minute)"/>

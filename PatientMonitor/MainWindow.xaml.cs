@@ -34,7 +34,7 @@ namespace PatientMonitor
         DateTime dateTemp;
         double frequencyTemp = 0;
         int harmonicsTemp = 1;
-        double amplitudeValue = 5;
+        double amplitudeValue = 0;
         bool wasPatientCreated = false;
 
         public MainWindow()
@@ -234,12 +234,19 @@ namespace PatientMonitor
                 ComboBoxHarmonics.IsEnabled = false;
             }
 
+            
             if (wasPatientCreated)
             {
                 switch (parameter)
                 {
-                    case MonitorConstants.Parameter.ECG: patient.ECGFrequency = frequencyTemp; break;
-                    case MonitorConstants.Parameter.EMG: patient.EMGFrequency = frequencyTemp; break;
+                    case MonitorConstants.Parameter.ECG: SliderAmplitudeValue.Value = patient.ECGAmplitude; 
+                                                         TextBoxFrequencyValue.Text = patient.ECGFrequency.ToString();
+                                                         if (patient.ECGFrequency == 0.0) { patient.ECGFrequency = frequencyTemp; }
+                                                         break;
+                    case MonitorConstants.Parameter.EMG: SliderAmplitudeValue.Value = patient.EMGAmplitude;
+                                                         TextBoxFrequencyValue.Text = patient.EMGFrequency.ToString();
+                                                         if (patient.EMGFrequency == 0.0) { patient.EMGFrequency = frequencyTemp; }
+                                                         break;
                 }
             }
         }
