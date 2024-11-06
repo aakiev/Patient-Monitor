@@ -6,27 +6,14 @@ using System.Threading.Tasks;
 
 namespace PatientMonitor
 {
-    internal class Respiration
+    internal class Respiration : PhysioParameters
     {
-        private double amplitude = 0.0;
-        private double frequency = 0.0;
+        public Respiration(double amplitude, double frequency) : base(amplitude, frequency, 0) { }
 
-
-        public double Amplitude { get => amplitude; set => amplitude = value; }
-        public double Frequency { get => frequency; set => frequency = value; }
-
-
-        public Respiration(double amplitude, double frequency)
+        public override double NextSample(double timeIndex)
         {
-            this.amplitude = amplitude;
-            this.frequency = frequency;
+            double period = 1.0 / Frequency;
+            return 2 * Amplitude * (timeIndex / period - Math.Floor(timeIndex / period + 0.5));
         }
-
-        public double NextSample(double timeIndex)
-        {
-            double period = 1.0 / frequency; 
-            return 2 * amplitude * (timeIndex / period - Math.Floor(timeIndex / period + 0.5));
-        }
-
     }
 }

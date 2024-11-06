@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PatientMonitor
 {
-    class Patient
+    internal class Patient
     {
 
         ECG ecg;
@@ -60,7 +60,7 @@ namespace PatientMonitor
         public int ECGHarmonics { get => ecg.Harmonics; set => ecg.Harmonics = value; }
 
 
-        //Properties for EMG
+        //Properties for EEG
         public double EEGAmplitude { get => eeg.Amplitude; set => eeg.Amplitude = value; }
         public double EEGFrequency { get => eeg.Frequency; set => eeg.Frequency = value; }
 
