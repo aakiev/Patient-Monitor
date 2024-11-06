@@ -162,7 +162,7 @@ namespace PatientMonitor
         private void ComboBoxHarmonics_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             harmonicsTemp = ComboBoxHarmonics.SelectedIndex;
-            if (wasPatientCreated) patient.ECGHarmonics = harmonicsTemp;
+            if (wasPatientCreated && parameter == MonitorConstants.Parameter.ECG) patient.ECGHarmonics = harmonicsTemp;
         }
 
         private void SliderAmplitudeValue_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -245,18 +245,22 @@ namespace PatientMonitor
                 {
                     case MonitorConstants.Parameter.ECG: SliderAmplitudeValue.Value = patient.ECGAmplitude; 
                                                          TextBoxFrequencyValue.Text = patient.ECGFrequency.ToString();
+                                                         ComboBoxHarmonics.SelectedIndex = patient.ECGHarmonics;
                                                          if (patient.ECGFrequency == 0.0) { patient.ECGFrequency = frequencyTemp; }
                                                          break;
                     case MonitorConstants.Parameter.EMG: SliderAmplitudeValue.Value = patient.EMGAmplitude;
                                                          TextBoxFrequencyValue.Text = patient.EMGFrequency.ToString();
+                                                         ComboBoxHarmonics.SelectedIndex = -1;
                                                          if (patient.EMGFrequency == 0.0) { patient.EMGFrequency = frequencyTemp; }
                                                          break;
                     case MonitorConstants.Parameter.EEG: SliderAmplitudeValue.Value = patient.EEGAmplitude;
                                                          TextBoxFrequencyValue.Text = patient.EEGFrequency.ToString();
+                                                         ComboBoxHarmonics.SelectedIndex = -1;
                                                          if (patient.EEGFrequency == 0.0) { patient.EEGFrequency = frequencyTemp; }
                                                          break;
                     case MonitorConstants.Parameter.Respiration: SliderAmplitudeValue.Value = patient.RespirationAmplitude;
                                                                  TextBoxFrequencyValue.Text = patient.RespirationFrequency.ToString();
+                                                                 ComboBoxHarmonics.SelectedIndex = -1;
                                                                  if (patient.RespirationFrequency == 0.0) { patient.RespirationFrequency = frequencyTemp; }
                                                                  break;
                 }
