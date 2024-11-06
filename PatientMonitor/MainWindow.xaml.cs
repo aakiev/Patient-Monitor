@@ -13,10 +13,13 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using System.Windows.Media.Imaging; 
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Microsoft.Win32;  //For OpenFileDialog
+
+
 
 
 namespace PatientMonitor
@@ -77,12 +80,12 @@ namespace PatientMonitor
         private void PatientNameTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
-            if(textBox.Text == "")
+            if (textBox.Text == "")
             {
                 textBox.Text = "Enter name here";
                 textBox.Foreground = Brushes.Red;
             }
-            
+
         }
 
         private void PatientAgeTextBox_LostFocus(object sender, RoutedEventArgs e)
@@ -99,7 +102,7 @@ namespace PatientMonitor
         private void PatientAgeTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !int.TryParse(e.Text, out _);
-            
+
         }
 
         private void PatientAgeTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -138,7 +141,7 @@ namespace PatientMonitor
         }
 
         private void TextBoxFrequencyValue_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {   
+        {
             e.Handled = !int.TryParse(e.Text, out _);
         }
 
@@ -151,7 +154,7 @@ namespace PatientMonitor
 
         private void TextBoxFrequencyValue_LostFocus(object sender, RoutedEventArgs e)
         {
-            if(TextBoxFrequencyValue.Text == "")
+            if (TextBoxFrequencyValue.Text == "")
             {
                 TextBoxFrequencyValue.Text = "0";
                 TextBoxFrequencyValue.Foreground = Brushes.Red;
@@ -196,7 +199,7 @@ namespace PatientMonitor
             {
                 MessageBox.Show("Fill all boxes!");
             }
-            
+
         }
 
         private void buttonStartSimulation_Click(object sender, RoutedEventArgs e)
@@ -206,6 +209,7 @@ namespace PatientMonitor
             TextBoxFrequencyValue.IsEnabled = true;
             ComboBoxHarmonics.IsEnabled = true;
             ComboBoxParameters.IsEnabled = true;
+            ButtonLoadImage.IsEnabled = true;
         }
 
         private void buttonQuit_Click(object sender, RoutedEventArgs e)
@@ -222,14 +226,14 @@ namespace PatientMonitor
             patient.ECGAmplitude = amplitudeValue;
             patient.ECGFrequency = frequencyTemp;
             patient.ECGHarmonics = harmonicsTemp;
-            
+
         }
 
 
         private void ComboBoxParameters_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             parameter = (MonitorConstants.Parameter)ComboBoxParameters.SelectedIndex;
-            if(parameter == MonitorConstants.Parameter.ECG)
+            if (parameter == MonitorConstants.Parameter.ECG)
             {
                 ComboBoxHarmonics.IsEnabled = true;
             }
@@ -238,31 +242,31 @@ namespace PatientMonitor
                 ComboBoxHarmonics.IsEnabled = false;
             }
 
-            
+
             if (wasPatientCreated)
             {
                 switch (parameter)
                 {
-                    case MonitorConstants.Parameter.ECG: SliderAmplitudeValue.Value = patient.ECGAmplitude; 
-                                                         TextBoxFrequencyValue.Text = patient.ECGFrequency.ToString();
-                                                         ComboBoxHarmonics.SelectedIndex = patient.ECGHarmonics;
-                                                         if (patient.ECGFrequency == 0.0) { patient.ECGFrequency = frequencyTemp; }
-                                                         break;
+                    case MonitorConstants.Parameter.ECG: SliderAmplitudeValue.Value = patient.ECGAmplitude;
+                        TextBoxFrequencyValue.Text = patient.ECGFrequency.ToString();
+                        ComboBoxHarmonics.SelectedIndex = patient.ECGHarmonics;
+                        if (patient.ECGFrequency == 0.0) { patient.ECGFrequency = frequencyTemp; }
+                        break;
                     case MonitorConstants.Parameter.EMG: SliderAmplitudeValue.Value = patient.EMGAmplitude;
-                                                         TextBoxFrequencyValue.Text = patient.EMGFrequency.ToString();
-                                                         ComboBoxHarmonics.SelectedIndex = -1;
-                                                         if (patient.EMGFrequency == 0.0) { patient.EMGFrequency = frequencyTemp; }
-                                                         break;
+                        TextBoxFrequencyValue.Text = patient.EMGFrequency.ToString();
+                        ComboBoxHarmonics.SelectedIndex = -1;
+                        if (patient.EMGFrequency == 0.0) { patient.EMGFrequency = frequencyTemp; }
+                        break;
                     case MonitorConstants.Parameter.EEG: SliderAmplitudeValue.Value = patient.EEGAmplitude;
-                                                         TextBoxFrequencyValue.Text = patient.EEGFrequency.ToString();
-                                                         ComboBoxHarmonics.SelectedIndex = -1;
-                                                         if (patient.EEGFrequency == 0.0) { patient.EEGFrequency = frequencyTemp; }
-                                                         break;
+                        TextBoxFrequencyValue.Text = patient.EEGFrequency.ToString();
+                        ComboBoxHarmonics.SelectedIndex = -1;
+                        if (patient.EEGFrequency == 0.0) { patient.EEGFrequency = frequencyTemp; }
+                        break;
                     case MonitorConstants.Parameter.Respiration: SliderAmplitudeValue.Value = patient.RespirationAmplitude;
-                                                                 TextBoxFrequencyValue.Text = patient.RespirationFrequency.ToString();
-                                                                 ComboBoxHarmonics.SelectedIndex = -1;
-                                                                 if (patient.RespirationFrequency == 0.0) { patient.RespirationFrequency = frequencyTemp; }
-                                                                 break;
+                        TextBoxFrequencyValue.Text = patient.RespirationFrequency.ToString();
+                        ComboBoxHarmonics.SelectedIndex = -1;
+                        if (patient.RespirationFrequency == 0.0) { patient.RespirationFrequency = frequencyTemp; }
+                        break;
                 }
             }
         }
@@ -279,5 +283,33 @@ namespace PatientMonitor
                 combo.SelectionChanged -= ComboBoxParameters_SelectionChanged;
             }
         }
+
+        private void ButtonLoadImage_Click(object sender, RoutedEventArgs e)
+        {
+            // Create an OpenFileDialog
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Image files (*.bmp)|*.bmp|All files (*.*)|*.*";
+
+            // Show the dialog and check if the result is OK
+            if (openFileDialog.ShowDialog() == true)
+            {
+                // Create a new BitmapImage
+                BitmapImage bitmap = new BitmapImage();
+
+                // Set the UriSource to load the image from the file
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri(openFileDialog.FileName, UriKind.Absolute);
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+
+                // Create an ImageBrush and set its ImageSource
+                ImageBrush myImageBrush = new ImageBrush();
+                myImageBrush.ImageSource = bitmap;
+
+                // Assuming you have a Rectangle named "RectangleImage" in XAML
+                RectangleImage.Fill = myImageBrush;
+            }
+        }
+
     }
 }

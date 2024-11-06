@@ -6,10 +6,10 @@
         xmlns:local="clr-namespace:PatientMonitor"
         xmlns:toolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit" x:Class="PatientMonitor.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="750" Width="800">
+        Title="MainWindow" Height="750" Width="1200">
 
     <Grid>
-        <toolkit:Chart Title="Real-time ECG" Width="800" Height="400" VerticalAlignment="Top">
+        <toolkit:Chart Title="Real-Time Parameter" Width="800" Height="400" VerticalAlignment="Top" Margin="0,0,392,0">
             <toolkit:LineSeries x:Name="lineSeriesECG"
                                         Title="ECG Channel1"
                                         IndependentValueBinding="{Binding Key}"
@@ -22,7 +22,7 @@
                 </toolkit:LineSeries.DependentRangeAxis>
             </toolkit:LineSeries>
         </toolkit:Chart>
-        <GroupBox x:Name="ECGgroupBox" Header="ECG" Width="380" Height="250" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,60" FontSize="16">
+        <GroupBox x:Name="ECGgroupBox" Header="ECG" Width="380" Height="250" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,392,60" FontSize="16">
             <Grid>
                 <Slider x:Name="SliderAmplitudeValue" Minimum="0" Maximum="10" Value="0" Margin="10,71,8,0" Height="20" Width="350" VerticalAlignment="Top" ValueChanged="SliderAmplitudeValue_ValueChanged" IsEnabled="False"/>
                 <TextBlock x:Name="TextBlockValuesMV" HorizontalAlignment="Left" Margin="10,45,0,0" TextWrapping="Wrap" Text="0 mV         2.5 mV       5 mV       7.5 mV       10 mV" VerticalAlignment="Top" Width="348"/>
@@ -44,25 +44,33 @@
         <GroupBox x:Name="PatientGroupBox" Header="Input Patient" Width="380" Height="250" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="14,0,0,60" FontSize="16">
             <!-- add Grid, to allow multiple elemnts -->
             <Grid>
-                <DatePicker x:Name="DatePickerDate" HorizontalAlignment="Center" Margin="198,32,10,104" SelectedDateChanged="DatePickerDate_SelectedDateChanged" />
-                <Button x:Name="buttonCreatePatient" Content="Create Patient" Width="120" Margin="124,156,124,36" Height="30" Click="buttonCreatePatient_Click"/>
-                <Button x:Name="buttonUpdatePatient" Content="Update Patient" Width="120" Margin="0,190,0,0" Height="30" IsEnabled="False" Click="buttonUpdatePatient_Click"/>
-                <TextBlock x:Name="PatientNameTextBlock" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="Patient Name :" VerticalAlignment="Top" Width="120"/>
-                <TextBox x:Name="PatientNameTextBox" HorizontalAlignment="Left" Height="23" Margin="10,35,0,0" TextWrapping="Wrap" Text="Enter name here" VerticalAlignment="Top" Width="153" GotFocus="PatientNameTextBox_GotFocus" LostFocus="PatientNameTextBox_LostFocus" TextChanged="PatientNameTextBox_TextChanged" />
+                <DatePicker x:Name="DatePickerDate" HorizontalAlignment="Center" Margin="10,170,205,21" SelectedDateChanged="DatePickerDate_SelectedDateChanged" Width="153" />
+                <Button x:Name="buttonCreatePatient" Content="Create Patient" Width="120" Margin="216,73,32,112" Click="buttonCreatePatient_Click"/>
+                <Button x:Name="buttonUpdatePatient" Content="Update Patient" Width="120" Margin="216,116,32,69" IsEnabled="False" Click="buttonUpdatePatient_Click"/>
+                <TextBlock x:Name="PatientNameTextBlock" HorizontalAlignment="Left" Height="23" Margin="10,21,0,0" TextWrapping="Wrap" Text="Patient Name :" VerticalAlignment="Top" Width="120"/>
+                <TextBox x:Name="PatientNameTextBox" HorizontalAlignment="Left" Height="29" Margin="10,46,0,0" TextWrapping="Wrap" Text="Enter name here" VerticalAlignment="Top" Width="153" GotFocus="PatientNameTextBox_GotFocus" LostFocus="PatientNameTextBox_LostFocus" TextChanged="PatientNameTextBox_TextChanged" />
 
-                <TextBlock x:Name="PatientAgeTextBlock" HorizontalAlignment="Left" Height="23" Margin="10,70,0,0" TextWrapping="Wrap" Text="Patient Age :" VerticalAlignment="Top" Width="120"/>
-                <TextBox x:Name="PatientAgeTextBox" HorizontalAlignment="Left" Height="23" Margin="10,95,0,0" TextWrapping="Wrap" Text="Enter age here" VerticalAlignment="Top" Width="153" GotFocus="PatientNameTextBox_GotFocus" LostFocus="PatientAgeTextBox_LostFocus" PreviewTextInput="PatientAgeTextBox_PreviewTextInput" TextChanged="PatientAgeTextBox_TextChanged"/>
+                <TextBlock x:Name="PatientAgeTextBlock" HorizontalAlignment="Left" Height="23" Margin="10,91,0,0" TextWrapping="Wrap" Text="Patient Age :" VerticalAlignment="Top" Width="120"/>
+                <TextBox x:Name="PatientAgeTextBox" HorizontalAlignment="Left" Height="28" Margin="10,116,0,0" TextWrapping="Wrap" Text="Enter age here" VerticalAlignment="Top" Width="153" GotFocus="PatientNameTextBox_GotFocus" LostFocus="PatientAgeTextBox_LostFocus" PreviewTextInput="PatientAgeTextBox_PreviewTextInput" TextChanged="PatientAgeTextBox_TextChanged"/>
             </Grid>
         </GroupBox>
 
-        <Button x:Name="buttonStartSimulation" Content="Start Simulation" HorizontalAlignment="Left" Margin="500,675,0,0" VerticalAlignment="Top" FontSize="16" IsEnabled="False" Click="buttonStartSimulation_Click"/>
-        <Button x:Name="buttonQuit" Content="Stop" HorizontalAlignment="Left" Margin="650,675,0,0" VerticalAlignment="Top" FontSize="16" Click="buttonQuit_Click"/>
-        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
+        <Button x:Name="buttonStartSimulation" Content="Start Simulation" HorizontalAlignment="Left" Margin="478,664,0,0" VerticalAlignment="Top" FontSize="16" IsEnabled="False" Click="buttonStartSimulation_Click" Width="137" Height="34"/>
+        <Button x:Name="buttonQuit" Content="Stop" HorizontalAlignment="Left" Margin="640,664,0,0" VerticalAlignment="Top" FontSize="16" Click="buttonQuit_Click" Width="83" Height="34"/>
         <ComboBox x:Name="ComboBoxHarmonics" HorizontalAlignment="Left" Margin="674,552,0,0" VerticalAlignment="Top" Width="80" SelectionChanged="ComboBoxHarmonics_SelectionChanged" SelectedIndex="0" IsEnabled="False">
             <ComboBoxItem Content="1"/>
             <ComboBoxItem Content="2"/>
             <ComboBoxItem Content="3"/>
         </ComboBox>
+
+        <GroupBox Header="MR Images" HorizontalAlignment="Left" Height="72" Margin="801,10,0,0" VerticalAlignment="Top" Width="377"/>
+        <Grid>
+            <Rectangle x:Name="RectangleImage" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="308" Margin="804,92,0,0" Stroke="Black" VerticalAlignment="Top" Width="372"/>
+            <Button x:Name="ButtonPreviousImage" Content="Previous" Margin="814,40,296,0" VerticalAlignment="Top" Height="29" IsEnabled="False" HorizontalAlignment="Center" Width="82"/>
+            <Button x:Name="ButtonLoadImage" Content="Load Image" HorizontalAlignment="Left" Margin="942,40,0,0" VerticalAlignment="Top" Width="108" Height="29" Click="ButtonLoadImage_Click" IsEnabled="False"/>
+            <Button x:Name="ButtonNextImage" Content="Next" HorizontalAlignment="Center" Margin="1090,40,20,0" VerticalAlignment="Top" Width="82" Height="29" IsEnabled="False"/>
+
+        </Grid>
 
     </Grid>
 </Window>

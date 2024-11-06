@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace PatientMonitor
 {
@@ -13,8 +14,8 @@ namespace PatientMonitor
         EEG eeg;
         EMG emg;
         Respiration respiration;
+        MRImaging mrimaging;
         
-
         private string patientName;
         private DateTime dateOfStudy;
         private int age;
@@ -34,7 +35,6 @@ namespace PatientMonitor
                 case MonitorConstants.Parameter.EMG: NextSample = emg.NextSample(timeIndex); break;
                 case MonitorConstants.Parameter.Respiration: NextSample = respiration.NextSample(timeIndex); break;
                 default: break;
-
             }
 
             return NextSample;
@@ -46,11 +46,17 @@ namespace PatientMonitor
             eeg = new EEG(amplitude, frequency);
             emg = new EMG(amplitude, frequency);
             respiration = new Respiration(amplitude, frequency);
-
+            mrimaging = new MRImaging();
 
             this.patientName = patientName;
             this.dateOfStudy = dateOfStudy;
             this.age = age;
+
+        }
+
+        public void loadImages(string imageFile)
+        {
+            mrimaging.loadImages(imageFile);
         }
 
 
@@ -73,6 +79,8 @@ namespace PatientMonitor
         public double RespirationAmplitude { get => respiration.Amplitude; set => respiration.Amplitude = value; }
         public double RespirationFrequency { get => respiration.Frequency; set => respiration.Frequency = value; }
 
+        //Property for MRImaging
+        public Bitmap AnImage { get => mrimaging.AnImage; set => mrimaging.AnImage = value; }
 
     }
 }
