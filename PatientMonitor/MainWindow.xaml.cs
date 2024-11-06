@@ -286,6 +286,9 @@ namespace PatientMonitor
 
         private void ButtonLoadImage_Click(object sender, RoutedEventArgs e)
         {
+            //For the Project beeing exactly like Algorris, i include a timer stop here (In Case Algorri really wants it like that)
+            timer.Stop();
+
             // Create an OpenFileDialog
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Image files (*.bmp)|*.bmp|All files (*.*)|*.*";
