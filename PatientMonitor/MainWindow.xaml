@@ -38,9 +38,9 @@
                 </ComboBox>
                 <TextBlock x:Name="TextBlock_ComboBoxParameters" Margin="34,167,261,0" TextWrapping="Wrap" Text="Parameter" VerticalAlignment="Top"/>
                 <TextBlock x:Name="TextBlockLowAlarm" Margin="148,100,145,98" TextWrapping="Wrap" Text="Low Alarm"/>
-                <TextBox x:Name="TextBoxLowAlarmValue" Height="23" Margin="146,129,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="81" IsEnabled="False" HorizontalAlignment="Left" TextChanged="TextBoxLowAlarmValue_TextChanged"/>
+                <TextBox x:Name="TextBoxLowAlarmValue" Height="23" Margin="146,129,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="81" IsEnabled="False" HorizontalAlignment="Left" TextChanged="TextBoxLowAlarmValue_TextChanged" LostFocus="TextBoxLowAlarmValue_LostFocus" GotFocus="TextBoxLowAlarmValue_GotFocus"/>
                 <TextBlock x:Name="TextBlockHighAlarm" Margin="255,100,33,98" TextWrapping="Wrap" Text="High Alarm"/>
-                <TextBox x:Name="TextBoxHighAlarmValue" Height="23" Margin="255,129,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="81" IsEnabled="False" HorizontalAlignment="Left" TextChanged="TextBoxHighAlarmValue_TextChanged"/>
+                <TextBox x:Name="TextBoxHighAlarmValue" Height="23" Margin="255,129,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="81" IsEnabled="False" HorizontalAlignment="Left" TextChanged="TextBoxHighAlarmValue_TextChanged" LostFocus="TextBoxHighAlarmValue_LostFocus" GotFocus="TextBoxHighAlarmValue_GotFocus"/>
             </Grid>
 
 
@@ -73,8 +73,8 @@
             <Button x:Name="ButtonPreviousImage" Content="Previous" Margin="814,40,296,0" VerticalAlignment="Top" Height="29" IsEnabled="False" HorizontalAlignment="Center" Width="82"/>
             <Button x:Name="ButtonLoadImage" Content="Load Image" HorizontalAlignment="Left" Margin="942,40,0,0" VerticalAlignment="Top" Width="108" Height="29" Click="ButtonLoadImage_Click" IsEnabled="False"/>
             <Button x:Name="ButtonNextImage" Content="Next" HorizontalAlignment="Center" Margin="1090,40,20,0" VerticalAlignment="Top" Width="82" Height="29" IsEnabled="False"/>
-            <TextBlock x:Name="TextBlockDisplayLowAlarm" HorizontalAlignment="Left" Margin="672,254,0,0" TextWrapping="Wrap" Text="No Low Alarm" VerticalAlignment="Top" Width="89"/>
-            <TextBlock x:Name="TextBlockDisplayHighAlarm" HorizontalAlignment="Left" Margin="672,171,0,0" TextWrapping="Wrap" Text="No High Alarm" VerticalAlignment="Top" Width="89"/>
+            <TextBlock x:Name="TextBlockDisplayLowAlarm" HorizontalAlignment="Left" Margin="669,249,0,0" TextWrapping="Wrap" Text="No Low Alarm" VerticalAlignment="Top" Width="101" FontSize="14"/>
+            <TextBlock x:Name="TextBlockDisplayHighAlarm" HorizontalAlignment="Left" Margin="668,169,0,0" TextWrapping="Wrap" Text="No High Alarm" VerticalAlignment="Top" Width="106" FontSize="14"/>
 
         </Grid>
 

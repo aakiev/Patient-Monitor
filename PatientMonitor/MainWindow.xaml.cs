@@ -419,5 +419,35 @@ namespace PatientMonitor
                 }
             }
         }
+
+        private void TextBoxLowAlarmValue_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (TextBoxLowAlarmValue.Text == "")
+            {
+                TextBoxLowAlarmValue.Text = "0";
+                TextBoxLowAlarmValue.Foreground = Brushes.Red;
+            }
+        }
+
+        private void TextBoxLowAlarmValue_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBoxLowAlarmValue.Text = "";
+            TextBoxLowAlarmValue.Foreground = Brushes.Black;
+        }
+
+        private void TextBoxHighAlarmValue_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (TextBoxHighAlarmValue.Text == "")
+            {
+                TextBoxHighAlarmValue.Text = "0";
+                TextBoxHighAlarmValue.Foreground = Brushes.Red;
+            }
+        }
+
+        private void TextBoxHighAlarmValue_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBoxHighAlarmValue.Text = "";
+            TextBoxHighAlarmValue.Foreground = Brushes.Black;
+        }
     }
 }
