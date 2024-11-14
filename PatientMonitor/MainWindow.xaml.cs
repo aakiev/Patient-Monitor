@@ -38,6 +38,8 @@ namespace PatientMonitor
         double frequencyTemp = 0;
         int harmonicsTemp = 1;
         double amplitudeValue = 0;
+        double lowAlarmTemp = 0;
+        double highAlarmTemp = 0;
         bool wasPatientCreated = false;
 
         public MainWindow()
@@ -131,10 +133,26 @@ namespace PatientMonitor
             {
                 switch (parameter)
                 {
-                    case MonitorConstants.Parameter.ECG: patient.ECGFrequency = frequencyTemp; break;
-                    case MonitorConstants.Parameter.EMG: patient.EMGFrequency = frequencyTemp; break;
-                    case MonitorConstants.Parameter.EEG: patient.EEGFrequency = frequencyTemp; break;
-                    case MonitorConstants.Parameter.Respiration: patient.RespirationFrequency = frequencyTemp; break;
+                    case MonitorConstants.Parameter.ECG: patient.ECGFrequency = frequencyTemp;
+                        patient.displayLowAlarm(parameter, patient.ECGFrequency, patient.ECGLowAlarm);
+                        patient.displayHighAlarm(parameter, patient.ECGFrequency, patient.ECGHighAlarm);
+                        TextBlockDisplayLowAlarm.Text = patient.ECGLowAlarmString;
+                        TextBlockDisplayHighAlarm.Text = patient.ECGHighAlarmString; break;
+                    case MonitorConstants.Parameter.EMG: patient.EMGFrequency = frequencyTemp;
+                        patient.displayLowAlarm(parameter, patient.EMGFrequency, patient.EMGLowAlarm);
+                        patient.displayHighAlarm(parameter, patient.EMGFrequency, patient.EMGHighAlarm);
+                        TextBlockDisplayLowAlarm.Text = patient.EMGLowAlarmString;
+                        TextBlockDisplayHighAlarm.Text = patient.EMGHighAlarmString; break;
+                    case MonitorConstants.Parameter.EEG: patient.EEGFrequency = frequencyTemp;
+                        patient.displayLowAlarm(parameter, patient.EEGFrequency, patient.EEGLowAlarm);
+                        patient.displayHighAlarm(parameter, patient.EEGFrequency, patient.EEGHighAlarm);
+                        TextBlockDisplayLowAlarm.Text = patient.EEGLowAlarmString;
+                        TextBlockDisplayHighAlarm.Text = patient.EEGHighAlarmString; break;
+                    case MonitorConstants.Parameter.Respiration: patient.RespirationFrequency = frequencyTemp;
+                        patient.displayLowAlarm(parameter, patient.RespirationFrequency, patient.RespirationLowAlarm);
+                        patient.displayHighAlarm(parameter, patient.RespirationFrequency, patient.RespirationHighAlarm);
+                        TextBlockDisplayLowAlarm.Text = patient.RespirationLowAlarmString;
+                        TextBlockDisplayHighAlarm.Text = patient.RespirationHighAlarmString; break;
                 }
             }
 
@@ -210,6 +228,8 @@ namespace PatientMonitor
             ComboBoxHarmonics.IsEnabled = true;
             ComboBoxParameters.IsEnabled = true;
             ButtonLoadImage.IsEnabled = true;
+            TextBoxHighAlarmValue.IsEnabled = true;
+            TextBoxLowAlarmValue.IsEnabled = true;
         }
 
         private void buttonQuit_Click(object sender, RoutedEventArgs e)
@@ -251,21 +271,52 @@ namespace PatientMonitor
                         TextBoxFrequencyValue.Text = patient.ECGFrequency.ToString();
                         ComboBoxHarmonics.SelectedIndex = patient.ECGHarmonics;
                         if (patient.ECGFrequency == 0.0) { patient.ECGFrequency = frequencyTemp; }
+
+                        patient.displayLowAlarm(parameter, patient.ECGFrequency, patient.ECGLowAlarm);
+                        patient.displayHighAlarm(parameter, patient.ECGFrequency, patient.ECGHighAlarm);
+                        TextBlockDisplayLowAlarm.Text = patient.ECGLowAlarmString;
+                        TextBlockDisplayHighAlarm.Text = patient.ECGHighAlarmString;
+                        TextBoxLowAlarmValue.Text = patient.ECGLowAlarm.ToString();
+                        TextBoxHighAlarmValue.Text = patient.ECGHighAlarm.ToString();
                         break;
+
                     case MonitorConstants.Parameter.EMG: SliderAmplitudeValue.Value = patient.EMGAmplitude;
                         TextBoxFrequencyValue.Text = patient.EMGFrequency.ToString();
                         ComboBoxHarmonics.SelectedIndex = -1;
                         if (patient.EMGFrequency == 0.0) { patient.EMGFrequency = frequencyTemp; }
+
+                        patient.displayLowAlarm(parameter, patient.EMGFrequency, patient.EMGLowAlarm);
+                        patient.displayHighAlarm(parameter, patient.EMGFrequency, patient.EMGHighAlarm);
+                        TextBlockDisplayLowAlarm.Text = patient.EMGLowAlarmString;
+                        TextBlockDisplayHighAlarm.Text = patient.EMGHighAlarmString;
+                        TextBoxLowAlarmValue.Text = patient.EMGLowAlarm.ToString();
+                        TextBoxHighAlarmValue.Text = patient.EMGHighAlarm.ToString(); 
                         break;
+
                     case MonitorConstants.Parameter.EEG: SliderAmplitudeValue.Value = patient.EEGAmplitude;
                         TextBoxFrequencyValue.Text = patient.EEGFrequency.ToString();
                         ComboBoxHarmonics.SelectedIndex = -1;
                         if (patient.EEGFrequency == 0.0) { patient.EEGFrequency = frequencyTemp; }
+
+                        patient.displayLowAlarm(parameter, patient.EEGFrequency, patient.EEGLowAlarm);
+                        patient.displayHighAlarm(parameter, patient.EEGFrequency, patient.EEGHighAlarm);
+                        TextBlockDisplayLowAlarm.Text = patient.EEGLowAlarmString;
+                        TextBlockDisplayHighAlarm.Text = patient.EEGHighAlarmString;
+                        TextBoxLowAlarmValue.Text = patient.EEGLowAlarm.ToString();
+                        TextBoxHighAlarmValue.Text = patient.EEGHighAlarm.ToString(); 
                         break;
+
                     case MonitorConstants.Parameter.Respiration: SliderAmplitudeValue.Value = patient.RespirationAmplitude;
                         TextBoxFrequencyValue.Text = patient.RespirationFrequency.ToString();
                         ComboBoxHarmonics.SelectedIndex = -1;
                         if (patient.RespirationFrequency == 0.0) { patient.RespirationFrequency = frequencyTemp; }
+
+                        patient.displayLowAlarm(parameter, patient.RespirationFrequency, patient.RespirationLowAlarm);
+                        patient.displayHighAlarm(parameter, patient.RespirationFrequency, patient.RespirationHighAlarm);
+                        TextBlockDisplayLowAlarm.Text = patient.RespirationLowAlarmString;
+                        TextBlockDisplayHighAlarm.Text = patient.RespirationHighAlarmString;
+                        TextBoxLowAlarmValue.Text = patient.RespirationLowAlarm.ToString();
+                        TextBoxHighAlarmValue.Text = patient.RespirationHighAlarm.ToString(); 
                         break;
                 }
             }
@@ -314,5 +365,59 @@ namespace PatientMonitor
             }
         }
 
+        private void TextBoxLowAlarmValue_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+            double.TryParse(TextBoxLowAlarmValue.Text, out double parsedLowAlarm);
+            lowAlarmTemp = parsedLowAlarm;
+
+            if (wasPatientCreated)
+            {
+                switch (parameter)
+                {
+                    case MonitorConstants.Parameter.ECG: patient.ECGLowAlarm = lowAlarmTemp; 
+                        patient.displayLowAlarm(parameter, patient.ECGFrequency, patient.ECGLowAlarm);
+                        TextBlockDisplayLowAlarm.Text = patient.ECGLowAlarmString; break;
+                    case MonitorConstants.Parameter.EMG: patient.EMGLowAlarm = lowAlarmTemp; 
+                        patient.displayLowAlarm(parameter, patient.EMGFrequency, patient.EMGLowAlarm);
+                        TextBlockDisplayLowAlarm.Text = patient.EMGLowAlarmString; break;
+                    case MonitorConstants.Parameter.EEG: patient.EEGLowAlarm = lowAlarmTemp; 
+                        patient.displayLowAlarm(parameter, patient.EEGFrequency, patient.EEGLowAlarm);
+                        TextBlockDisplayLowAlarm.Text = patient.EEGLowAlarmString; break;
+                    case MonitorConstants.Parameter.Respiration: patient.RespirationLowAlarm = lowAlarmTemp; 
+                        patient.displayLowAlarm(parameter, patient.RespirationFrequency, patient.RespirationLowAlarm);
+                        TextBlockDisplayLowAlarm.Text = patient.RespirationLowAlarmString; break;
+                }
+            }
+        }
+
+        private void TextBoxHighAlarmValue_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            double.TryParse(TextBoxHighAlarmValue.Text, out double parsedHighAlarm);
+            highAlarmTemp = parsedHighAlarm;
+
+            if (wasPatientCreated)
+            {
+                switch (parameter)
+                {
+                    case MonitorConstants.Parameter.ECG:
+                        patient.ECGHighAlarm = highAlarmTemp;
+                        patient.displayHighAlarm(parameter, patient.ECGFrequency, patient.ECGHighAlarm);
+                        TextBlockDisplayHighAlarm.Text = patient.ECGHighAlarmString; break;
+                    case MonitorConstants.Parameter.EMG:
+                        patient.EMGHighAlarm = highAlarmTemp;
+                        patient.displayHighAlarm(parameter, patient.EMGFrequency, patient.EMGHighAlarm);
+                        TextBlockDisplayHighAlarm.Text = patient.EMGHighAlarmString; break;
+                    case MonitorConstants.Parameter.EEG:
+                        patient.EEGHighAlarm = highAlarmTemp;
+                        patient.displayHighAlarm(parameter, patient.EEGFrequency, patient.EEGHighAlarm);
+                        TextBlockDisplayHighAlarm.Text = patient.EEGHighAlarmString; break;
+                    case MonitorConstants.Parameter.Respiration:
+                        patient.RespirationHighAlarm = highAlarmTemp;
+                        patient.displayHighAlarm(parameter, patient.RespirationFrequency, patient.RespirationHighAlarm);
+                        TextBlockDisplayHighAlarm.Text = patient.RespirationHighAlarmString; break;
+                }
+            }
+        }
     }
 }

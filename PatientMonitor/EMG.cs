@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PatientMonitor
 {
-    internal class EMG : PhysioParameters
+    internal class EMG : PhysioParameters, IPhysioParameters
     {
         public EMG(double amplitude, double frequency) : base(amplitude, frequency, 0) { }
 
@@ -28,6 +28,30 @@ namespace PatientMonitor
             }
 
             return (Amplitude * sample);
+        }
+
+        public new void displayHighAlarm(double frequency, double alarmHigh)
+        {
+            if (frequency <= LowAlarm)
+            {
+                LowAlarmString = "Low Alarm: " + LowAlarm;
+            }
+            else
+            {
+                LowAlarmString = " ";
+            }
+        }
+
+        public new void displayLowAlarm(double frequency, double alarmLow)
+        {
+            if (frequency >= HighAlarm)
+            {
+                HighAlarmString = "High Alarm: " + HighAlarm;
+            }
+            else
+            {
+                HighAlarmString = " ";
+            }
         }
     }
 }

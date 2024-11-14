@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PatientMonitor
 {
-    internal class EEG : PhysioParameters
+    internal class EEG : PhysioParameters, IPhysioParameters
     {
         public EEG(double amplitude, double frequency) : base(amplitude, frequency, 0) { }
 
@@ -26,6 +26,30 @@ namespace PatientMonitor
             }
 
             return sample;
+        }
+
+        public new void displayHighAlarm(double frequency, double alarmHigh)
+        {
+            if (frequency <= LowAlarm)
+            {
+                LowAlarmString = "Low Alarm: " + LowAlarm;
+            }
+            else
+            {
+                LowAlarmString = " ";
+            }
+        }
+
+        public new void displayLowAlarm(double frequency, double alarmLow)
+        {
+            if (frequency >= HighAlarm)
+            {
+                HighAlarmString = "High Alarm: " + HighAlarm;
+            }
+            else
+            {
+                HighAlarmString = " ";
+            }
         }
     }
 }

@@ -27,16 +27,20 @@
                 <Slider x:Name="SliderAmplitudeValue" Minimum="0" Maximum="10" Value="0" Margin="10,71,8,0" Height="20" Width="350" VerticalAlignment="Top" ValueChanged="SliderAmplitudeValue_ValueChanged" IsEnabled="False"/>
                 <TextBlock x:Name="TextBlockValuesMV" HorizontalAlignment="Left" Margin="10,45,0,0" TextWrapping="Wrap" Text="0 mV         2.5 mV       5 mV       7.5 mV       10 mV" VerticalAlignment="Top" Width="348"/>
                 <TextBlock x:Name="TextBlockAmplitude" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Amplitude (mV)" VerticalAlignment="Top" Width="114"/>
-                <TextBlock x:Name="TextBlockFrequency" Margin="14,96,167,102" TextWrapping="Wrap" Text="Frequency (cycles/minute)"/>
-                <TextBox x:Name="TextBoxFrequencyValue" Height="23" Margin="32,129,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="149" TextChanged="TextBoxFrequencyValue_TextChanged" PreviewTextInput="TextBoxFrequencyValue_PreviewTextInput" GotFocus="TextBoxFrequencyValue_GotFocus" LostFocus="TextBoxFrequencyValue_LostFocus" IsEnabled="False" HorizontalAlignment="Left"/>
-                <TextBlock x:Name="TextBlockHarmonics" HorizontalAlignment="Left" Margin="275,96,0,0" TextWrapping="Wrap" Text="Harmonics" VerticalAlignment="Top"/>
-                <ComboBox x:Name="ComboBoxParameters" Margin="124,191,124,5" SelectedIndex="0" IsEnabled="False" SelectionChanged="ComboBoxParameters_SelectionChanged" IsEnabledChanged="ComboBoxParameters_IsEnabledChanged">
+                <TextBlock x:Name="TextBlockFrequency" Margin="34,100,259,98" TextWrapping="Wrap" Text="Frequency"/>
+                <TextBox x:Name="TextBoxFrequencyValue" Height="23" Margin="32,129,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="81" TextChanged="TextBoxFrequencyValue_TextChanged" PreviewTextInput="TextBoxFrequencyValue_PreviewTextInput" GotFocus="TextBoxFrequencyValue_GotFocus" LostFocus="TextBoxFrequencyValue_LostFocus" IsEnabled="False" HorizontalAlignment="Left"/>
+                <TextBlock x:Name="TextBlockHarmonics" HorizontalAlignment="Left" Margin="255,167,0,0" TextWrapping="Wrap" Text="Harmonics" VerticalAlignment="Top"/>
+                <ComboBox x:Name="ComboBoxParameters" Margin="15,188,246,8" SelectedIndex="0" IsEnabled="False" SelectionChanged="ComboBoxParameters_SelectionChanged" IsEnabledChanged="ComboBoxParameters_IsEnabledChanged">
                     <ComboBoxItem Content="ECG"/>
                     <ComboBoxItem Content="EEG"/>
                     <ComboBoxItem Content="EMG"/>
                     <ComboBoxItem Content="Respiration"/>
                 </ComboBox>
-                <TextBlock x:Name="TextBlock_ComboBoxParameters" Margin="147,170,148,0" TextWrapping="Wrap" Text="Parameter" VerticalAlignment="Top"/>
+                <TextBlock x:Name="TextBlock_ComboBoxParameters" Margin="34,167,261,0" TextWrapping="Wrap" Text="Parameter" VerticalAlignment="Top"/>
+                <TextBlock x:Name="TextBlockLowAlarm" Margin="148,100,145,98" TextWrapping="Wrap" Text="Low Alarm"/>
+                <TextBox x:Name="TextBoxLowAlarmValue" Height="23" Margin="146,129,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="81" IsEnabled="False" HorizontalAlignment="Left" TextChanged="TextBoxLowAlarmValue_TextChanged"/>
+                <TextBlock x:Name="TextBlockHighAlarm" Margin="255,100,33,98" TextWrapping="Wrap" Text="High Alarm"/>
+                <TextBox x:Name="TextBoxHighAlarmValue" Height="23" Margin="255,129,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="81" IsEnabled="False" HorizontalAlignment="Left" TextChanged="TextBoxHighAlarmValue_TextChanged"/>
             </Grid>
 
 
@@ -57,7 +61,7 @@
 
         <Button x:Name="buttonStartSimulation" Content="Start Simulation" HorizontalAlignment="Left" Margin="478,664,0,0" VerticalAlignment="Top" FontSize="16" IsEnabled="False" Click="buttonStartSimulation_Click" Width="137" Height="34"/>
         <Button x:Name="buttonQuit" Content="Stop" HorizontalAlignment="Left" Margin="640,664,0,0" VerticalAlignment="Top" FontSize="16" Click="buttonQuit_Click" Width="83" Height="34"/>
-        <ComboBox x:Name="ComboBoxHarmonics" HorizontalAlignment="Left" Margin="674,552,0,0" VerticalAlignment="Top" Width="80" SelectionChanged="ComboBoxHarmonics_SelectionChanged" SelectedIndex="0" IsEnabled="False">
+        <ComboBox x:Name="ComboBoxHarmonics" HorizontalAlignment="Left" Margin="661,612,0,0" VerticalAlignment="Top" Width="107" SelectionChanged="ComboBoxHarmonics_SelectionChanged" SelectedIndex="0" IsEnabled="False" Height="26">
             <ComboBoxItem Content="1"/>
             <ComboBoxItem Content="2"/>
             <ComboBoxItem Content="3"/>
@@ -69,6 +73,8 @@
             <Button x:Name="ButtonPreviousImage" Content="Previous" Margin="814,40,296,0" VerticalAlignment="Top" Height="29" IsEnabled="False" HorizontalAlignment="Center" Width="82"/>
             <Button x:Name="ButtonLoadImage" Content="Load Image" HorizontalAlignment="Left" Margin="942,40,0,0" VerticalAlignment="Top" Width="108" Height="29" Click="ButtonLoadImage_Click" IsEnabled="False"/>
             <Button x:Name="ButtonNextImage" Content="Next" HorizontalAlignment="Center" Margin="1090,40,20,0" VerticalAlignment="Top" Width="82" Height="29" IsEnabled="False"/>
+            <TextBlock x:Name="TextBlockDisplayLowAlarm" HorizontalAlignment="Left" Margin="672,254,0,0" TextWrapping="Wrap" Text="No Low Alarm" VerticalAlignment="Top" Width="89"/>
+            <TextBlock x:Name="TextBlockDisplayHighAlarm" HorizontalAlignment="Left" Margin="672,171,0,0" TextWrapping="Wrap" Text="No High Alarm" VerticalAlignment="Top" Width="89"/>
 
         </Grid>
 
