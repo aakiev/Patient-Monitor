@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PatientMonitor
 {
@@ -9,7 +10,6 @@ namespace PatientMonitor
         private double frequency = 0.0;
         private int harmonics = 1;
 
-        // Neue Variablen
         private double lowAlarm = 0.0;
         private double highAlarm = 0.0;
         private string lowAlarmString = " ";
@@ -21,6 +21,7 @@ namespace PatientMonitor
         public int Harmonics { get => harmonics; set => harmonics = value; }
         public string LowAlarmString { get => lowAlarmString; set => lowAlarmString = value; }
         public string HighAlarmString { get => highAlarmString; set => highAlarmString = value; }
+
 
 
         public double LowAlarm {

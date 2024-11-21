@@ -20,6 +20,9 @@ namespace PatientMonitor
         private DateTime dateOfStudy;
         private int age;
 
+        const int maxSamples = 1024;
+        List<double> sampleList = new List<double>(maxSamples);
+
         public string PatientName { get => patientName; set => patientName = value; }
         public DateTime DateOfStudy { get => dateOfStudy; set => dateOfStudy = value; }
         public int Age { get => age; set => age = value; }
@@ -37,6 +40,16 @@ namespace PatientMonitor
                 default: break;
             }
 
+            if(sampleList.Count <= maxSamples)
+            {
+                sampleList.Add(NextSample);
+            }
+            else
+            {
+                sampleList.RemoveAt(0);
+                sampleList.Add(NextSample);
+            }
+            
             return NextSample;
         }
 
@@ -120,6 +133,9 @@ namespace PatientMonitor
 
         //Property for MRImaging
         public Bitmap AnImage { get => mrimaging.AnImage; set => mrimaging.AnImage = value; }
+
+        //Property for the sample list
+        public List<double> SampleList { get => sampleList; set => sampleList = value; }
 
     }
 }

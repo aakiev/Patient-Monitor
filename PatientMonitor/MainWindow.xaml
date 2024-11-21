@@ -10,18 +10,47 @@
 
     <Grid>
         <toolkit:Chart Title="Real-Time Parameter" Width="800" Height="400" VerticalAlignment="Top" Margin="0,0,392,0">
-            <toolkit:LineSeries x:Name="lineSeriesECG"
-                                        Title="ECG Channel1"
-                                        IndependentValueBinding="{Binding Key}"
-                                        DependentValueBinding="{Binding Value}">
+            <!-- LineSeries für den Zeitbereich -->
+            <toolkit:LineSeries x:Name="lineSeriesTime"
+                        Title="Time Domain"
+                        IndependentValueBinding="{Binding Key}"
+                        DependentValueBinding="{Binding Value}">
                 <toolkit:LineSeries.IndependentAxis>
-                    <toolkit:LinearAxis Orientation="X" Title="Time (ms)" />
+                    <toolkit:LinearAxis x:Name="timeAxisX"
+                                Orientation="X" 
+                                Title="Time (ms)" />
                 </toolkit:LineSeries.IndependentAxis>
                 <toolkit:LineSeries.DependentRangeAxis>
-                    <toolkit:LinearAxis Orientation="Y" Title="Value (mA)" />
+                    <toolkit:LinearAxis x:Name="amplitudeAxisY"
+                                Orientation="Y" 
+                                Title="Amplitude (mV)" />
+                </toolkit:LineSeries.DependentRangeAxis>
+            </toolkit:LineSeries>
+
+            <!-- LineSeries für den Frequenzbereich-->
+            <toolkit:LineSeries x:Name="lineSeriesFFT"
+                        Title="Frequency Domain"
+                        IndependentValueBinding="{Binding Key}"
+                        DependentValueBinding="{Binding Value}">
+                <toolkit:LineSeries.IndependentAxis>
+                    <toolkit:LinearAxis x:Name="frequencyAxisX"
+                                Orientation="X" 
+                                Title="Frequency (Hz)" 
+                                Visibility="Collapsed"
+                                Location="Bottom" />
+                </toolkit:LineSeries.IndependentAxis>
+                <toolkit:LineSeries.DependentRangeAxis>
+                    <toolkit:LinearAxis x:Name="energyAxisY"
+                                Orientation="Y" 
+                                Title="Energy (dB)" 
+                                Visibility="Collapsed"
+                                Location="Left"/>
                 </toolkit:LineSeries.DependentRangeAxis>
             </toolkit:LineSeries>
         </toolkit:Chart>
+
+
+
         <GroupBox x:Name="ECGgroupBox" Header="ECG" Width="380" Height="250" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,392,60" FontSize="16">
             <Grid>
                 <Slider x:Name="SliderAmplitudeValue" Minimum="0" Maximum="10" Value="0" Margin="10,71,8,0" Height="20" Width="350" VerticalAlignment="Top" ValueChanged="SliderAmplitudeValue_ValueChanged" IsEnabled="False"/>
@@ -48,14 +77,14 @@
         <GroupBox x:Name="PatientGroupBox" Header="Input Patient" Width="380" Height="250" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="14,0,0,60" FontSize="16">
             <!-- add Grid, to allow multiple elemnts -->
             <Grid>
-                <DatePicker x:Name="DatePickerDate" HorizontalAlignment="Center" Margin="10,170,205,21" SelectedDateChanged="DatePickerDate_SelectedDateChanged" Width="153" />
+                <DatePicker x:Name="DatePickerDate" HorizontalAlignment="Center" Margin="10,170,179,21" SelectedDateChanged="DatePickerDate_SelectedDateChanged" Width="179" />
                 <Button x:Name="buttonCreatePatient" Content="Create Patient" Width="120" Margin="216,73,32,112" Click="buttonCreatePatient_Click"/>
                 <Button x:Name="buttonUpdatePatient" Content="Update Patient" Width="120" Margin="216,116,32,69" IsEnabled="False" Click="buttonUpdatePatient_Click"/>
                 <TextBlock x:Name="PatientNameTextBlock" HorizontalAlignment="Left" Height="23" Margin="10,21,0,0" TextWrapping="Wrap" Text="Patient Name :" VerticalAlignment="Top" Width="120"/>
-                <TextBox x:Name="PatientNameTextBox" HorizontalAlignment="Left" Height="29" Margin="10,46,0,0" TextWrapping="Wrap" Text="Enter name here" VerticalAlignment="Top" Width="153" GotFocus="PatientNameTextBox_GotFocus" LostFocus="PatientNameTextBox_LostFocus" TextChanged="PatientNameTextBox_TextChanged" />
+                <TextBox x:Name="PatientNameTextBox" HorizontalAlignment="Left" Height="29" Margin="10,46,0,0" TextWrapping="Wrap" Text="Enter name here" VerticalAlignment="Top" Width="179" GotFocus="PatientNameTextBox_GotFocus" LostFocus="PatientNameTextBox_LostFocus" TextChanged="PatientNameTextBox_TextChanged" />
 
                 <TextBlock x:Name="PatientAgeTextBlock" HorizontalAlignment="Left" Height="23" Margin="10,91,0,0" TextWrapping="Wrap" Text="Patient Age :" VerticalAlignment="Top" Width="120"/>
-                <TextBox x:Name="PatientAgeTextBox" HorizontalAlignment="Left" Height="28" Margin="10,116,0,0" TextWrapping="Wrap" Text="Enter age here" VerticalAlignment="Top" Width="153" GotFocus="PatientNameTextBox_GotFocus" LostFocus="PatientAgeTextBox_LostFocus" PreviewTextInput="PatientAgeTextBox_PreviewTextInput" TextChanged="PatientAgeTextBox_TextChanged"/>
+                <TextBox x:Name="PatientAgeTextBox" HorizontalAlignment="Left" Height="28" Margin="10,116,0,0" TextWrapping="Wrap" Text="Enter age here" VerticalAlignment="Top" Width="179" GotFocus="PatientNameTextBox_GotFocus" LostFocus="PatientAgeTextBox_LostFocus" PreviewTextInput="PatientAgeTextBox_PreviewTextInput" TextChanged="PatientAgeTextBox_TextChanged"/>
             </Grid>
         </GroupBox>
 
@@ -73,8 +102,8 @@
             <Button x:Name="ButtonPreviousImage" Content="Previous" Margin="814,40,296,0" VerticalAlignment="Top" Height="29" IsEnabled="False" HorizontalAlignment="Center" Width="82"/>
             <Button x:Name="ButtonLoadImage" Content="Load Image" HorizontalAlignment="Left" Margin="942,40,0,0" VerticalAlignment="Top" Width="108" Height="29" Click="ButtonLoadImage_Click" IsEnabled="False"/>
             <Button x:Name="ButtonNextImage" Content="Next" HorizontalAlignment="Center" Margin="1090,40,20,0" VerticalAlignment="Top" Width="82" Height="29" IsEnabled="False"/>
-            <TextBlock x:Name="TextBlockDisplayLowAlarm" HorizontalAlignment="Left" Margin="669,249,0,0" TextWrapping="Wrap" Text="No Low Alarm" VerticalAlignment="Top" Width="101" FontSize="14"/>
-            <TextBlock x:Name="TextBlockDisplayHighAlarm" HorizontalAlignment="Left" Margin="668,169,0,0" TextWrapping="Wrap" Text="No High Alarm" VerticalAlignment="Top" Width="106" FontSize="14"/>
+            <TextBlock x:Name="TextBlockDisplayLowAlarm" HorizontalAlignment="Left" Margin="174,44,0,0" TextWrapping="Wrap" Text="No Low Alarm" VerticalAlignment="Top" Width="101" FontSize="14" FontFamily="Yu Gothic UI Semibold"/>
+            <TextBlock x:Name="TextBlockDisplayHighAlarm" HorizontalAlignment="Left" Margin="53,44,0,0" TextWrapping="Wrap" Text="No High Alarm" VerticalAlignment="Top" Width="106" FontSize="14" FontFamily="Yu Gothic UI Semibold"/>
             <RadioButton x:Name="RadioButtonTime" Content="Time" HorizontalAlignment="Left" Margin="636,440,0,0" VerticalAlignment="Top" IsEnabled="False" FontSize="14"/>
             <RadioButton x:Name="RadioButtonFrequency" Content="Frequency" HorizontalAlignment="Left" Margin="698,440,0,0" VerticalAlignment="Top" IsEnabled="False" FontSize="14"/>
 
