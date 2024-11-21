@@ -2,7 +2,7 @@
 
 namespace PatientMonitor
 {
-    internal class PhysioParameters
+    internal abstract class PhysioParameters
     {
         // Variablen
         private double amplitude = 0.0;
@@ -64,11 +64,7 @@ namespace PatientMonitor
             displayHighAlarm(this.frequency, this.highAlarm);
         }
 
-        // Virtuelle Methode NextSample
-        public virtual double NextSample(double timeIndex)  //wird als virtual deklariert, damit diese von den Tochterklassen mit "override" überladen werden kann
-        {
-            return 1.0;       //Diese Methode soll nicht ausgeführt werden, sondern nur überschrieben. Deshalb returnen wir einfach nur 1.0
-        }
+        public abstract double NextSample(double timeIndex);    //Abstrakte Methode, die Subklassen müssen diese überschreiben
 
         public void displayLowAlarm(double frequency, double lowAlarm)
         {

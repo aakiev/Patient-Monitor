@@ -230,6 +230,8 @@ namespace PatientMonitor
             ButtonLoadImage.IsEnabled = true;
             TextBoxHighAlarmValue.IsEnabled = true;
             TextBoxLowAlarmValue.IsEnabled = true;
+            RadioButtonTime.IsEnabled = true;
+            RadioButtonFrequency.IsEnabled = true;
         }
 
         private void buttonQuit_Click(object sender, RoutedEventArgs e)

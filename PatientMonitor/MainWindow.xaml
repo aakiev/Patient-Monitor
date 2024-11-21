@@ -75,6 +75,8 @@
             <Button x:Name="ButtonNextImage" Content="Next" HorizontalAlignment="Center" Margin="1090,40,20,0" VerticalAlignment="Top" Width="82" Height="29" IsEnabled="False"/>
             <TextBlock x:Name="TextBlockDisplayLowAlarm" HorizontalAlignment="Left" Margin="669,249,0,0" TextWrapping="Wrap" Text="No Low Alarm" VerticalAlignment="Top" Width="101" FontSize="14"/>
             <TextBlock x:Name="TextBlockDisplayHighAlarm" HorizontalAlignment="Left" Margin="668,169,0,0" TextWrapping="Wrap" Text="No High Alarm" VerticalAlignment="Top" Width="106" FontSize="14"/>
+            <RadioButton x:Name="RadioButtonTime" Content="Time" HorizontalAlignment="Left" Margin="636,440,0,0" VerticalAlignment="Top" IsEnabled="False" FontSize="14"/>
+            <RadioButton x:Name="RadioButtonFrequency" Content="Frequency" HorizontalAlignment="Left" Margin="698,440,0,0" VerticalAlignment="Top" IsEnabled="False" FontSize="14"/>
 
         </Grid>
 
