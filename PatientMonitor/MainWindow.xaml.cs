@@ -18,7 +18,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Microsoft.Win32;  //For OpenFileDialog
-using System.Linq;
 
 
 
@@ -57,36 +56,8 @@ namespace PatientMonitor
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (RadioButtonTime.IsChecked == true)
-            {
-                // Sichtbarkeit für Zeitbereich
-                lineSeriesTime.Visibility = Visibility.Visible;
-                lineSeriesFFT.Visibility = Visibility.Collapsed;
-
-                timeAxisX.Visibility = Visibility.Visible;
-                amplitudeAxisY.Visibility = Visibility.Visible;
-
-                frequencyAxisX.Visibility = Visibility.Collapsed;
-                energyAxisY.Visibility = Visibility.Collapsed;
-
-                displayTime();
-            }
-            else if (RadioButtonFrequency.IsChecked == true)
-            {
-                // Sichtbarkeit für Frequenzbereich
-                lineSeriesTime.Visibility = Visibility.Collapsed;
-                lineSeriesFFT.Visibility = Visibility.Visible;
-
-                timeAxisX.Visibility = Visibility.Collapsed;
-                amplitudeAxisY.Visibility = Visibility.Collapsed;
-
-                frequencyAxisX.Visibility = Visibility.Visible;
-                energyAxisY.Visibility = Visibility.Visible;
-
-                displayFrequency();
-            }
+            displayTime();
         }
-
 
         private void displayTime()
         {
@@ -105,52 +76,7 @@ namespace PatientMonitor
                 dataPoints.RemoveAt(0); // Delete last point
             }
         }
-        private void displayFrequency()
-        {
-            lineSeriesFFT.ItemsSource = null;
-
-            if (patient != null && patient.SampleList.Count >= 512)
-            {
-                // Letzte 512 Punkte mit Skip
-                double[] sampleArray = patient.SampleList.Skip(patient.SampleList.Count - 512).ToArray();
-
-                // Erstellung Spektrum-Objekt und Fourier-Transformation
-                Spektrum spektrum = new Spektrum(sampleArray.Length);
-                double[] frequencySpectrum = spektrum.FFT(sampleArray, sampleArray.Length);
-
-                // Frequenzdaten binden an neue lineSeries
-                ObservableCollection<KeyValuePair<int, double>> frequencyDataPoints = new ObservableCollection<KeyValuePair<int, double>>();
-                double samplingRate = 6000; 
-                for (int i = 0; i < frequencySpectrum.Length; i++)
-                {
-                    double frequency = i * (samplingRate / sampleArray.Length); // Frequenz berechnen
-                    frequencyDataPoints.Add(new KeyValuePair<int, double>((int)frequency, frequencySpectrum[i]));
-                }
-
-                //LineSeries für Frequenz aktualisieren
-                lineSeriesFFT.ItemsSource = frequencyDataPoints;
-
-                //Umschaltung zwischen Zeit- und Frequenzdarstellung
-                //lineSeriesTime.Visibility = Visibility.Collapsed;
-                //lineSeriesFFT.Visibility = Visibility.Visible;
-            }
-            else if (patient != null && patient.SampleList.Count < 512)
-            {
-                MessageBox.Show("Not enough data points available for Fourier transform. At least 512 points are required.");
-                RadioButtonFrequency.IsChecked = false;
-                RadioButtonTime.IsChecked = true;
-            }
-            else
-            {
-                MessageBox.Show("No patient data available for frequency display.");
-                RadioButtonFrequency.IsChecked = false;
-                RadioButtonTime.IsChecked = true;
-            }
-        }
-
-
-
-
+        
 
         private void PatientNameTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -310,8 +236,6 @@ namespace PatientMonitor
             ButtonLoadImage.IsEnabled = true;
             TextBoxHighAlarmValue.IsEnabled = true;
             TextBoxLowAlarmValue.IsEnabled = true;
-            RadioButtonTime.IsEnabled = true;
-            RadioButtonFrequency.IsEnabled = true;
         }
 
         private void buttonQuit_Click(object sender, RoutedEventArgs e)
@@ -530,6 +454,42 @@ namespace PatientMonitor
         {
             TextBoxHighAlarmValue.Text = "";
             TextBoxHighAlarmValue.Foreground = Brushes.Black;
+        }
+
+        private void ButtonFourierTransformation_Click(object sender, RoutedEventArgs e)
+        {
+            lineSeriesFFT.ItemsSource = null;
+
+            if (patient != null && patient.SampleList.Count >= 512)
+            {
+                // Letzte 512 Punkte mit Skip
+                double[] sampleArray = patient.SampleList.Skip(patient.SampleList.Count - 512).ToArray();
+
+                // Erstellung Spektrum-Objekt und Fourier-Transformation
+                Spektrum spektrum = new Spektrum(sampleArray.Length);
+                double[] frequencySpectrum = spektrum.FFT(sampleArray, sampleArray.Length);
+
+                // Frequenzdaten binden an neue lineSeries
+                ObservableCollection<KeyValuePair<int, double>> frequencyDataPoints = new ObservableCollection<KeyValuePair<int, double>>();
+                double samplingRate = 6000;
+                for (int i = 0; i < frequencySpectrum.Length; i++)
+                {
+                    double frequency = i * (samplingRate / sampleArray.Length); // Frequenz berechnen
+                    frequencyDataPoints.Add(new KeyValuePair<int, double>((int)frequency, frequencySpectrum[i]));
+                }
+
+                //LineSeries für Frequenz aktualisieren
+                lineSeriesFFT.ItemsSource = frequencyDataPoints;
+
+            }
+            else if (patient != null && patient.SampleList.Count < 512)
+            {
+                MessageBox.Show("Not enough data points available for Fourier transform. At least 512 points are required.");
+            }
+            else
+            {
+                MessageBox.Show("No patient data available for frequency display.");
+            }
         }
     }
 }

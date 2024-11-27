@@ -17,38 +17,57 @@
                         DependentValueBinding="{Binding Value}">
                 <toolkit:LineSeries.IndependentAxis>
                     <toolkit:LinearAxis x:Name="timeAxisX"
-                                Orientation="X" 
+                                Orientation="X"
+                                ShowGridLines="True" 
                                 Title="Time (ms)" />
                 </toolkit:LineSeries.IndependentAxis>
                 <toolkit:LineSeries.DependentRangeAxis>
                     <toolkit:LinearAxis x:Name="amplitudeAxisY"
-                                Orientation="Y" 
+                                Orientation="Y"
+                                ShowGridLines="True" 
                                 Title="Amplitude (mV)" />
-                </toolkit:LineSeries.DependentRangeAxis>
-            </toolkit:LineSeries>
-
-            <!-- LineSeries für den Frequenzbereich-->
-            <toolkit:LineSeries x:Name="lineSeriesFFT"
-                        Title="Frequency Domain"
-                        IndependentValueBinding="{Binding Key}"
-                        DependentValueBinding="{Binding Value}">
-                <toolkit:LineSeries.IndependentAxis>
-                    <toolkit:LinearAxis x:Name="frequencyAxisX"
-                                Orientation="X" 
-                                Title="Frequency (Hz)" 
-                                Visibility="Collapsed"
-                                Location="Bottom" />
-                </toolkit:LineSeries.IndependentAxis>
-                <toolkit:LineSeries.DependentRangeAxis>
-                    <toolkit:LinearAxis x:Name="energyAxisY"
-                                Orientation="Y" 
-                                Title="Energy (dB)" 
-                                Visibility="Collapsed"
-                                Location="Left"/>
                 </toolkit:LineSeries.DependentRangeAxis>
             </toolkit:LineSeries>
         </toolkit:Chart>
 
+        <toolkit:Chart Title="Fourier-Transformation" HorizontalAlignment="Left" Margin="804,413,0,0" VerticalAlignment="Top" Height="238" Width="372">
+            <!-- LineSeries für den Frequenzbereich-->
+            <toolkit:LineSeries x:Name="lineSeriesFFT"
+                        Title="FFT"
+                        IndependentValueBinding="{Binding Key}"
+                        DependentValueBinding="{Binding Value}">
+                <toolkit:LineSeries.DataPointStyle>
+                    <Style TargetType="Control">
+                        <Setter Property="Background" Value="Red" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <Path Stroke="Red" StrokeThickness="2" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </toolkit:LineSeries.DataPointStyle>
+
+                <toolkit:LineSeries.IndependentAxis>
+                    <toolkit:LinearAxis x:Name="frequencyAxisX"
+                                Orientation="X" 
+                                Title="Frequency (Hz)"
+                                ShowGridLines="True" 
+                                Visibility="Visible"
+                                Location="Bottom" />
+                </toolkit:LineSeries.IndependentAxis>
+
+                <toolkit:LineSeries.DependentRangeAxis>
+                    <toolkit:LinearAxis x:Name="energyAxisY"
+                                Orientation="Y" 
+                                Title="Energy (dB)" 
+                                ShowGridLines="True" 
+                                Visibility="Visible"
+                                Location="Left"/>
+                </toolkit:LineSeries.DependentRangeAxis>
+            </toolkit:LineSeries>
+        </toolkit:Chart>
 
 
         <GroupBox x:Name="ECGgroupBox" Header="ECG" Width="380" Height="250" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,392,60" FontSize="16">
@@ -104,9 +123,7 @@
             <Button x:Name="ButtonNextImage" Content="Next" HorizontalAlignment="Center" Margin="1090,40,20,0" VerticalAlignment="Top" Width="82" Height="29" IsEnabled="False"/>
             <TextBlock x:Name="TextBlockDisplayLowAlarm" HorizontalAlignment="Left" Margin="174,44,0,0" TextWrapping="Wrap" Text="No Low Alarm" VerticalAlignment="Top" Width="101" FontSize="14" FontFamily="Yu Gothic UI Semibold"/>
             <TextBlock x:Name="TextBlockDisplayHighAlarm" HorizontalAlignment="Left" Margin="53,44,0,0" TextWrapping="Wrap" Text="No High Alarm" VerticalAlignment="Top" Width="106" FontSize="14" FontFamily="Yu Gothic UI Semibold"/>
-            <RadioButton x:Name="RadioButtonTime" Content="Time" HorizontalAlignment="Left" Margin="636,440,0,0" VerticalAlignment="Top" IsEnabled="False" FontSize="14"/>
-            <RadioButton x:Name="RadioButtonFrequency" Content="Frequency" HorizontalAlignment="Left" Margin="698,440,0,0" VerticalAlignment="Top" IsEnabled="False" FontSize="14"/>
-
+            <Button x:Name="ButtonFourierTransformation" Content="Transform" HorizontalAlignment="Left" Margin="1087,496,0,0" VerticalAlignment="Top" Width="75" Click="ButtonFourierTransformation_Click"/>
         </Grid>
 
     </Grid>
