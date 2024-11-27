@@ -32,6 +32,7 @@ namespace PatientMonitor
         private int index = 0;
         Patient patient;
         MonitorConstants.Parameter parameter = MonitorConstants.Parameter.ECG;
+        private MRImaging mrImaging = new MRImaging();
 
         string patientNameTemp;
         int patientAgeTemp;
@@ -341,36 +342,6 @@ namespace PatientMonitor
             }
         }
 
-        private void ButtonLoadImage_Click(object sender, RoutedEventArgs e)
-        {
-            //For the Project beeing exactly like Algorris, i include a timer stop here (In Case Algorri really wants it like that)
-            timer.Stop();
-
-            // Create an OpenFileDialog
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image files (*.bmp)|*.bmp|All files (*.*)|*.*";
-
-            // Show the dialog and check if the result is OK
-            if (openFileDialog.ShowDialog() == true)
-            {
-                // Create a new BitmapImage
-                BitmapImage bitmap = new BitmapImage();
-
-                // Set the UriSource to load the image from the file
-                bitmap.BeginInit();
-                bitmap.UriSource = new Uri(openFileDialog.FileName, UriKind.Absolute);
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.EndInit();
-
-                // Create an ImageBrush and set its ImageSource
-                ImageBrush myImageBrush = new ImageBrush();
-                myImageBrush.ImageSource = bitmap;
-
-                // Assuming you have a Rectangle named "RectangleImage" in XAML
-                RectangleImage.Fill = myImageBrush;
-            }
-        }
-
         private void TextBoxLowAlarmValue_TextChanged(object sender, TextChangedEventArgs e)
         {
 
@@ -490,6 +461,92 @@ namespace PatientMonitor
             {
                 MessageBox.Show("No patient data available for frequency display.");
             }
+        }
+        private void ButtonLoadImage_Click(object sender, RoutedEventArgs e)
+        {
+            // Stop the time
+            timer.Stop();
+
+            // Create an OpenFileDialog
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Image files (*.bmp;*.jpg;*.png)|*.bmp;*.jpg;*.png|All files (*.*)|*.*";
+
+            // Show the dialog and check if the result is OK
+            if (openFileDialog.ShowDialog() == true)
+            {
+
+                // Load the image into the MRImaging class
+                mrImaging.LoadImage(openFileDialog.FileName);
+
+                // Display the currently loaded image
+                BitmapImage currentImage = mrImaging.GetCurrentImage();
+                if (currentImage != null)
+                {
+                    ImageBrush myImageBrush = new ImageBrush();
+                    myImageBrush.ImageSource = currentImage;
+                    RectangleImage.Fill = myImageBrush;
+                }
+            }
+
+            ButtonNextImage.IsEnabled = true;
+            ButtonPreviousImage.IsEnabled = true;
+            TextBoxMaxImages.IsEnabled = true;
+        }
+
+        private void ButtonPreviousImage_Click(object sender, RoutedEventArgs e)
+        {
+            BitmapImage previousImage = mrImaging.BackImage();
+            if (previousImage != null)
+            {
+                ImageBrush myImageBrush = new ImageBrush();
+                myImageBrush.ImageSource = previousImage;
+                RectangleImage.Fill = myImageBrush;
+            }
+            else
+            {
+                MessageBox.Show("No previous images available!");
+            }
+        }
+
+        private void ButtonNextImage_Click(object sender, RoutedEventArgs e)
+        {
+            BitmapImage nextImage = mrImaging.ForwardImage();
+            if (nextImage != null)
+            {
+                ImageBrush myImageBrush = new ImageBrush();
+                myImageBrush.ImageSource = nextImage;
+                RectangleImage.Fill = myImageBrush;
+            }
+            else
+            {
+                MessageBox.Show("No next images available!");
+            }
+        }
+
+        private void TextBoxMaxImages_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            int.TryParse(TextBoxMaxImages.Text, out int maxImagesTemp);
+            mrImaging.MaxImages = maxImagesTemp;
+        }
+
+        private void TextBoxMaxImages_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBoxMaxImages.Text = "";
+            TextBoxMaxImages.Foreground = Brushes.Black;
+        }
+
+        private void TextBoxMaxImages_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (TextBoxMaxImages.Text == "")
+            {
+                TextBoxMaxImages.Text = "0";
+                TextBoxMaxImages.Foreground = Brushes.Red;
+            }
+        }
+
+        private void TextBoxMaxImages_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !int.TryParse(e.Text, out _);
         }
     }
 }

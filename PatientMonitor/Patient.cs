@@ -14,7 +14,6 @@ namespace PatientMonitor
         EEG eeg;
         EMG emg;
         Respiration respiration;
-        MRImaging mrimaging;
         
         private string patientName;
         private DateTime dateOfStudy;
@@ -59,17 +58,11 @@ namespace PatientMonitor
             eeg = new EEG(amplitude, frequency);
             emg = new EMG(amplitude, frequency);
             respiration = new Respiration(amplitude, frequency);
-            mrimaging = new MRImaging();
 
             this.patientName = patientName;
             this.dateOfStudy = dateOfStudy;
             this.age = age;
 
-        }
-
-        public void loadImages(string imageFile)
-        {
-            mrimaging.loadImages(imageFile);
         }
 
         public void displayLowAlarm(MonitorConstants.Parameter parameter, double frequency, double lowAlarm)
@@ -130,9 +123,6 @@ namespace PatientMonitor
         public double RespirationHighAlarm { get => respiration.HighAlarm; set => respiration.HighAlarm = value; }
         public string RespirationLowAlarmString { get => respiration.LowAlarmString; }
         public string RespirationHighAlarmString { get => respiration.HighAlarmString; }
-
-        //Property for MRImaging
-        public Bitmap AnImage { get => mrimaging.AnImage; set => mrimaging.AnImage = value; }
 
         //Property for the sample list
         public List<double> SampleList { get => sampleList; set => sampleList = value; }
