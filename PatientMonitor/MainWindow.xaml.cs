@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -491,6 +491,7 @@ namespace PatientMonitor
             ButtonNextImage.IsEnabled = true;
             ButtonPreviousImage.IsEnabled = true;
             TextBoxMaxImages.IsEnabled = true;
+            // Hier vielleicht den Wert MaxImages auf den Inhalt der TextboxMaxImages setzen
         }
 
         private void ButtonPreviousImage_Click(object sender, RoutedEventArgs e)
