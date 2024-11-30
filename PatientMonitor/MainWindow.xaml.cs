@@ -467,6 +467,8 @@ namespace PatientMonitor
             // Stop the time
             timer.Stop();
 
+			//Hier eine MessageBox die den Nutzer darüber informiert, welche Dateitypen erlaubt sind
+
             // Create an OpenFileDialog
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Image files (*.bmp;*.jpg;*.png)|*.bmp;*.jpg;*.png|All files (*.*)|*.*";
