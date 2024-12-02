@@ -23,6 +23,7 @@ using Microsoft.Win32;  //For OpenFileDialog
 
 
 
+
 namespace PatientMonitor
 {
     public partial class MainWindow : Window
@@ -464,37 +465,70 @@ namespace PatientMonitor
         }
         private void ButtonLoadImage_Click(object sender, RoutedEventArgs e)
         {
-            // Stop the time
+            // Timer stoppen
             timer.Stop();
 
-			//Hier eine MessageBox die den Nutzer darüber informiert, welche Dateitypen erlaubt sind
-
-            // Create an OpenFileDialog
+            // Öffne eine Datei, um den Ordnerpfad zu ermitteln
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Image files (*.bmp;*.jpg;*.png)|*.bmp;*.jpg;*.png|All files (*.*)|*.*";
 
-            // Show the dialog and check if the result is OK
             if (openFileDialog.ShowDialog() == true)
             {
+                // Hole den Ordnerpfad der ausgewählten Datei
+                string folderPath = System.IO.Path.GetDirectoryName(openFileDialog.FileName);
 
-                // Load the image into the MRImaging class
-                mrImaging.LoadImage(openFileDialog.FileName);
+                // Lade alle Bilddateien im Ordner und sortiere sie nach Zahlen im Dateinamen
+                List<string> imagePaths = System.IO.Directory.GetFiles(folderPath, "*.*")
+                    .Where(file => file.EndsWith(".bmp") || file.EndsWith(".jpg") || file.EndsWith(".png"))
+                    .OrderBy(file =>
+                    {
+                // Extrahiere die Nummer aus dem Dateinamen
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(file);
+                        int number = ExtractNumber(fileName);
+                        return number; // Sortiere nach der extrahierten Nummer
+            })
+                    .ToList();
 
-                // Display the currently loaded image
-                BitmapImage currentImage = mrImaging.GetCurrentImage();
-                if (currentImage != null)
+                // Lade die Bilder in die MRImaging-Klasse
+                if (imagePaths.Count > 0)
                 {
-                    ImageBrush myImageBrush = new ImageBrush();
-                    myImageBrush.ImageSource = currentImage;
-                    RectangleImage.Fill = myImageBrush;
+                    mrImaging.ClearImages(); // Alte Bilder löschen (falls vorhanden)
+
+                    foreach (string path in imagePaths)
+                    {
+                        mrImaging.LoadImage(path);
+                    }
+
+                    // Zeige das erste Bild
+                    BitmapImage currentImage = mrImaging.ImageList[0];
+                    if (currentImage != null)
+                    {
+                        ImageBrush myImageBrush = new ImageBrush();
+                        myImageBrush.ImageSource = currentImage;
+                        RectangleImage.Fill = myImageBrush;
+                    }
+
+                    // Buttons aktivieren
+                    ButtonNextImage.IsEnabled = imagePaths.Count > 1;
+                    ButtonPreviousImage.IsEnabled = imagePaths.Count > 1;
+                    TextBoxMaxImages.IsEnabled = true;
+                    TextBoxMaxImages.Text = imagePaths.Count.ToString();
+                }
+                else
+                {
+                    MessageBox.Show("No valid images found in the selected folder.");
                 }
             }
-
-            ButtonNextImage.IsEnabled = true;
-            ButtonPreviousImage.IsEnabled = true;
-            TextBoxMaxImages.IsEnabled = true;
-            // Hier vielleicht den Wert MaxImages auf den Inhalt der TextboxMaxImages setzen
         }
+
+        // Hilfsmethode zum Extrahieren einer Zahl aus einem Dateinamen
+        private int ExtractNumber(string fileName)
+        {
+            var match = System.Text.RegularExpressions.Regex.Match(fileName, @"\d+");
+            return match.Success ? int.Parse(match.Value) : 0; // Falls keine Zahl gefunden wird, Rückgabewert 0
+        }
+
+
 
         private void ButtonPreviousImage_Click(object sender, RoutedEventArgs e)
         {
@@ -530,6 +564,7 @@ namespace PatientMonitor
         {
             int.TryParse(TextBoxMaxImages.Text, out int maxImagesTemp);
             mrImaging.MaxImages = maxImagesTemp;
+
         }
 
         private void TextBoxMaxImages_GotFocus(object sender, RoutedEventArgs e)
@@ -544,6 +579,14 @@ namespace PatientMonitor
             {
                 TextBoxMaxImages.Text = "0";
                 TextBoxMaxImages.Foreground = Brushes.Red;
+            }
+
+
+            if (mrImaging.ImageList.Count > 0)
+            {
+                ImageBrush myImageBrush = new ImageBrush();
+                myImageBrush.ImageSource = mrImaging.ImageList[0];
+                RectangleImage.Fill = myImageBrush;
             }
         }
 

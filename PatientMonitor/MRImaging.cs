@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Media.Imaging;
 
 namespace PatientMonitor
@@ -8,8 +9,10 @@ namespace PatientMonitor
     {
         private List<BitmapImage> imageList = new List<BitmapImage>();
         private int currentImageIndex = 0;
-        private int maxImages = 10;
+        private int maxImages = 0;
 
+        public List<BitmapImage> ImageList { get => imageList;}
+        public int CurrentImageIndex { get => currentImageIndex; set => currentImageIndex = value; }
         public int MaxImages
         {
             get => maxImages;
@@ -34,8 +37,16 @@ namespace PatientMonitor
             bitmap.EndInit();
 
             imageList.Add(bitmap);
-            currentImageIndex = imageList.Count - 1;
+            maxImages = imageList.Count; // Maximal verfügbare Bilder aktualisieren
         }
+
+        public void ClearImages()
+        {
+            imageList.Clear();
+            currentImageIndex = 0;
+            maxImages = 0;
+        }
+
 
 
         public BitmapImage GetCurrentImage()
