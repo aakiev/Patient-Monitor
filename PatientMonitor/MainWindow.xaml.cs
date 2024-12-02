@@ -563,7 +563,22 @@ namespace PatientMonitor
         private void TextBoxMaxImages_TextChanged(object sender, TextChangedEventArgs e)
         {
             int.TryParse(TextBoxMaxImages.Text, out int maxImagesTemp);
-            mrImaging.MaxImages = maxImagesTemp;
+
+            if (maxImagesTemp <= mrImaging.ImageList.Count)
+            {
+                mrImaging.MaxImages = maxImagesTemp;
+
+                if (mrImaging.ImageList.Count > 0)
+                {
+                    ImageBrush myImageBrush = new ImageBrush();
+                    myImageBrush.ImageSource = mrImaging.ImageList[0];
+                    RectangleImage.Fill = myImageBrush;
+                }
+            } else
+            {
+                MessageBox.Show("The maximum amount of images can not be higher than the total images you uploaded!");
+                TextBoxMaxImages.Text = "0";
+            }
 
         }
 
@@ -579,14 +594,6 @@ namespace PatientMonitor
             {
                 TextBoxMaxImages.Text = "0";
                 TextBoxMaxImages.Foreground = Brushes.Red;
-            }
-
-
-            if (mrImaging.ImageList.Count > 0)
-            {
-                ImageBrush myImageBrush = new ImageBrush();
-                myImageBrush.ImageSource = mrImaging.ImageList[0];
-                RectangleImage.Fill = myImageBrush;
             }
         }
 
