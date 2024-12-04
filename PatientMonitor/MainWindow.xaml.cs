@@ -468,6 +468,8 @@ namespace PatientMonitor
             // Timer stoppen
             timer.Stop();
 
+            _ = MessageBox.Show("Valid name-format for image files: BASE**.ext\n- BASE is a arbitary string\n- ** are two digits\n- .ext is the image format");
+
             // Öffne eine Datei, um den Ordnerpfad zu ermitteln
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Image files (*.bmp;*.jpg;*.png)|*.bmp;*.jpg;*.png|All files (*.*)|*.*";
