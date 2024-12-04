@@ -96,14 +96,16 @@
         <GroupBox x:Name="PatientGroupBox" Header="Input Patient" Width="380" Height="250" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="14,0,0,60" FontSize="16">
             <!-- add Grid, to allow multiple elemnts -->
             <Grid>
-                <DatePicker x:Name="DatePickerDate" HorizontalAlignment="Center" Margin="10,170,179,21" SelectedDateChanged="DatePickerDate_SelectedDateChanged" Width="179" />
-                <Button x:Name="buttonCreatePatient" Content="Create Patient" Width="120" Margin="216,73,32,112" Click="buttonCreatePatient_Click"/>
-                <Button x:Name="buttonUpdatePatient" Content="Update Patient" Width="120" Margin="216,116,32,69" IsEnabled="False" Click="buttonUpdatePatient_Click"/>
+                <DatePicker x:Name="DatePickerDate" HorizontalAlignment="Center" Margin="10,170,228,21" SelectedDateChanged="DatePickerDate_SelectedDateChanged" Width="130" FontSize="12"/>
+                <Button x:Name="buttonCreatePatient" Content="Create Patient" Margin="156,170,131,21" Click="buttonCreatePatient_Click" FontSize="12"/>
                 <TextBlock x:Name="PatientNameTextBlock" HorizontalAlignment="Left" Height="23" Margin="10,21,0,0" TextWrapping="Wrap" Text="Patient Name :" VerticalAlignment="Top" Width="120"/>
-                <TextBox x:Name="PatientNameTextBox" HorizontalAlignment="Left" Height="29" Margin="10,46,0,0" TextWrapping="Wrap" Text="Enter name here" VerticalAlignment="Top" Width="179" GotFocus="PatientNameTextBox_GotFocus" LostFocus="PatientNameTextBox_LostFocus" TextChanged="PatientNameTextBox_TextChanged" />
+                <TextBox x:Name="PatientNameTextBox" HorizontalAlignment="Left" Height="29" Margin="10,46,0,0" TextWrapping="Wrap" Text="Enter name here" VerticalAlignment="Top" Width="130" GotFocus="PatientNameTextBox_GotFocus" LostFocus="PatientNameTextBox_LostFocus" TextChanged="PatientNameTextBox_TextChanged" FontSize="14" />
 
                 <TextBlock x:Name="PatientAgeTextBlock" HorizontalAlignment="Left" Height="23" Margin="10,91,0,0" TextWrapping="Wrap" Text="Patient Age :" VerticalAlignment="Top" Width="120"/>
-                <TextBox x:Name="PatientAgeTextBox" HorizontalAlignment="Left" Height="28" Margin="10,116,0,0" TextWrapping="Wrap" Text="Enter age here" VerticalAlignment="Top" Width="179" GotFocus="PatientNameTextBox_GotFocus" LostFocus="PatientAgeTextBox_LostFocus" PreviewTextInput="PatientAgeTextBox_PreviewTextInput" TextChanged="PatientAgeTextBox_TextChanged"/>
+                <TextBox x:Name="PatientAgeTextBox" HorizontalAlignment="Left" Height="28" Margin="10,116,0,0" TextWrapping="Wrap" Text="Enter age here" VerticalAlignment="Top" Width="130" GotFocus="PatientNameTextBox_GotFocus" LostFocus="PatientAgeTextBox_LostFocus" PreviewTextInput="PatientAgeTextBox_PreviewTextInput" TextChanged="PatientAgeTextBox_TextChanged" FontSize="14"/>
+                <TextBlock x:Name="TextBlockRoomNumber" HorizontalAlignment="Left" Height="23" Margin="198,39,0,0" TextWrapping="Wrap" Text="Room number :" VerticalAlignment="Top" Width="120"/>
+                <TextBox x:Name="TextBoxRoomNumber" HorizontalAlignment="Left" Height="29" Margin="198,63,0,0" TextWrapping="Wrap" Text="Enter room number" VerticalAlignment="Top" Width="150" FontSize="14"/>
+                <TextBlock x:Name="TextBlockRoomNumber_Copy" HorizontalAlignment="Left" Height="23" Margin="198,109,0,0" TextWrapping="Wrap" Text="Clinic :" VerticalAlignment="Top" Width="120"/>
             </Grid>
         </GroupBox>
 
@@ -117,6 +119,10 @@
 
         <GroupBox Header="MR Images" HorizontalAlignment="Left" Height="72" Margin="839,10,0,0" VerticalAlignment="Top" Width="516"/>
         <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="604*"/>
+                <RowDefinition Height="115*"/>
+            </Grid.RowDefinitions>
             <Rectangle x:Name="RectangleImage" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="303" Margin="814,92,0,0" Stroke="Black" VerticalAlignment="Top" Width="568"/>
             <Button x:Name="ButtonPreviousImage" Content="Previous" Margin="867,40,443,0" VerticalAlignment="Top" Height="29" IsEnabled="False" HorizontalAlignment="Center" Width="82" Click="ButtonPreviousImage_Click"/>
             <Button x:Name="ButtonLoadImage" Content="Load Image" HorizontalAlignment="Left" Margin="990,40,0,0" VerticalAlignment="Top" Width="108" Height="29" Click="ButtonLoadImage_Click" IsEnabled="False"/>
@@ -126,6 +132,34 @@
             <Button x:Name="ButtonFourierTransformation" Content="Transform" HorizontalAlignment="Left" Margin="1293,503,0,0" VerticalAlignment="Top" Width="75" Click="ButtonFourierTransformation_Click" Height="25"/>
             <TextBox x:Name="TextBoxMaxImages" HorizontalAlignment="Left" Height="29" Margin="1278,39,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="55" FontSize="20" IsEnabled="False" TextChanged="TextBoxMaxImages_TextChanged" GotFocus="TextBoxMaxImages_GotFocus" LostFocus="TextBoxMaxImages_LostFocus" PreviewTextInput="TextBoxMaxImages_PreviewTextInput"/>
             <TextBlock x:Name="TextBlockMaxImages" HorizontalAlignment="Left" Margin="1274,21,0,0" TextWrapping="Wrap" Text="MaxImages" VerticalAlignment="Top" Width="73"/>
+            <RadioButton x:Name="RadioButtonAmbulatory" Content="Ambulatory" HorizontalAlignment="Left" Margin="202,443,0,0" VerticalAlignment="Top" FontSize="14"/>
+            <RadioButton x:Name="RadioButtonStationary" Content="Stationary" HorizontalAlignment="Left" Margin="304,443,0,0" VerticalAlignment="Top" FontSize="14"/>
+            <ComboBox x:Name="ComboBoxClinic" HorizontalAlignment="Left" Margin="220,554,0,0" VerticalAlignment="Top" Width="148" Height="26" SelectedIndex="0" IsSynchronizedWithCurrentItem="False">
+                <ComboBoxItem Content="Cardiology"/>
+                <ComboBoxItem Content="Neurology"/>
+                <ComboBoxItem Content="Orthopedics"/>
+                <ComboBoxItem Content="Surgery"/>
+                <ComboBoxItem Content="Dermatology"/>
+                <ComboBoxItem Content="Radiology"/>
+                <ComboBoxItem Content="Oftalmology"/>
+                <ComboBoxItem Content="Pediatrics"/>
+            </ComboBox>
+            <TextBlock x:Name="TextBlockSortBy" HorizontalAlignment="Left" Margin="264,4,0,0" TextWrapping="Wrap" Text="Sort by" VerticalAlignment="Top" Grid.Row="1"/>
+            <ComboBox x:Name="ComboBoxClinicSort" HorizontalAlignment="Left" Margin="307,595,0,0" VerticalAlignment="Top" Width="78" Height="29" SelectedIndex="0" IsSynchronizedWithCurrentItem="False" FontSize="10" IsEnabled="False" Grid.RowSpan="2">
+                <ComboBoxItem Content="Cardiology"/>
+                <ComboBoxItem Content="Neurology"/>
+                <ComboBoxItem Content="Orthopedics"/>
+                <ComboBoxItem Content="Surgery"/>
+                <ComboBoxItem Content="Dermatology"/>
+                <ComboBoxItem Content="Radiology"/>
+                <ComboBoxItem Content="Oftalmology"/>
+                <ComboBoxItem Content="Pediatrics"/>
+            </ComboBox>
+            <Button x:Name="ButtonChooseDir" Content="Choose Dir" HorizontalAlignment="Left" Margin="25,61,0,0" VerticalAlignment="Top" Width="75" Height="33" Grid.Row="1" IsEnabled="False"/>
+            <Button x:Name="ButtonLoadDB" Content="Load DB" HorizontalAlignment="Left" Margin="119,61,0,0" VerticalAlignment="Top" Width="91" Height="33" Grid.Row="1"/>
+            <Button x:Name="ButtonSaveDB" Content="Save DB" HorizontalAlignment="Left" Margin="225,61,0,0" VerticalAlignment="Top" Width="75" Height="33" Grid.Row="1" IsEnabled="False"/>
+            <RadioButton x:Name="RadioButtonParameter" Content="Parameter" HorizontalAlignment="Left" Margin="317,61,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+            <RadioButton x:Name="RadioButtonDataBase" Content="Data base" HorizontalAlignment="Left" Margin="317,79,0,0" Grid.Row="1" VerticalAlignment="Top" RenderTransformOrigin="0.282,0.933"/>
         </Grid>
 
     </Grid>

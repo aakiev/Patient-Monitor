@@ -218,7 +218,6 @@ namespace PatientMonitor
                 patient = new Patient(patientNameTemp, dateTemp, patientAgeTemp, amplitudeValue, frequencyTemp, harmonicsTemp);
                 MessageBox.Show("Patient " + patientNameTemp + " was created!");
                 wasPatientCreated = true;
-                buttonUpdatePatient.IsEnabled = true;
                 buttonStartSimulation.IsEnabled = true;
             }
             else
@@ -244,19 +243,6 @@ namespace PatientMonitor
         {
             timer.Stop();
         }
-
-        private void buttonUpdatePatient_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Patient " + patient.PatientName + " was updatet!");
-            patient.PatientName = patientNameTemp;
-            patient.Age = patientAgeTemp;
-            patient.DateOfStudy = dateTemp;
-            patient.ECGAmplitude = amplitudeValue;
-            patient.ECGFrequency = frequencyTemp;
-            patient.ECGHarmonics = harmonicsTemp;
-
-        }
-
 
         private void ComboBoxParameters_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
