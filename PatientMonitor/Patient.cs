@@ -14,7 +14,10 @@ namespace PatientMonitor
         EEG eeg;
         EMG emg;
         Respiration respiration;
-        
+
+        private MonitorConstants.clinic clinic;
+        string clinictype;
+
         private string patientName;
         private DateTime dateOfStudy;
         private int age;
@@ -25,6 +28,12 @@ namespace PatientMonitor
         public string PatientName { get => patientName; set => patientName = value; }
         public DateTime DateOfStudy { get => dateOfStudy; set => dateOfStudy = value; }
         public int Age { get => age; set => age = value; }
+        public string Clinictype { get => clinictype; set => clinictype = value; }
+        public MonitorConstants.clinic Clinic
+        {
+            get { return clinic; }
+            set { clinic = value; }
+        }
 
         public double NextSample(double timeIndex, MonitorConstants.Parameter parameter)
         {
@@ -52,7 +61,7 @@ namespace PatientMonitor
             return NextSample;
         }
 
-        public Patient(string patientName, DateTime dateOfStudy, int age, double amplitude, double frequency, int harmonics)
+        public Patient(string patientName, DateTime dateOfStudy, int age, double amplitude, double frequency, int harmonics, MonitorConstants.clinic clinic)
         {
             ecg = new ECG(amplitude, frequency, harmonics);
             eeg = new EEG(amplitude, frequency);
@@ -62,6 +71,20 @@ namespace PatientMonitor
             this.patientName = patientName;
             this.dateOfStudy = dateOfStudy;
             this.age = age;
+            this.clinic = clinic;
+
+            switch (clinic)
+            {
+                case MonitorConstants.clinic.Cardiology: clinictype = "Cardiology"; break;
+                case MonitorConstants.clinic.Dermatology: clinictype = "Dermatology"; break;
+                case MonitorConstants.clinic.Neurology: clinictype = "Neurology"; break;
+                case MonitorConstants.clinic.Oftalmology: clinictype = "Oftalmology"; break;
+                case MonitorConstants.clinic.Orthopedics: clinictype = "Othopedics"; break;
+                case MonitorConstants.clinic.Pediatrics: clinictype = "Pediatrics"; break;
+                case MonitorConstants.clinic.Radiology: clinictype = "Radiologoy"; break;
+                case MonitorConstants.clinic.Surgery: clinictype = "Surgery"; break;
+                default: break;
+            }
 
         }
 
@@ -90,6 +113,7 @@ namespace PatientMonitor
 
 
         //Properties for ECG
+        public ECG Ecg { get => ecg;}
         public double ECGAmplitude { get => ecg.Amplitude; set => ecg.Amplitude = value; }
         public double ECGFrequency { get => ecg.Frequency; set => ecg.Frequency = value; }
         public int ECGHarmonics { get => ecg.Harmonics; set => ecg.Harmonics = value; }
@@ -100,6 +124,7 @@ namespace PatientMonitor
 
 
         //Properties for EEG
+        public EEG Eeg { get => eeg; }
         public double EEGAmplitude { get => eeg.Amplitude; set => eeg.Amplitude = value; }
         public double EEGFrequency { get => eeg.Frequency; set => eeg.Frequency = value; }
         public double EEGLowAlarm { get => eeg.LowAlarm; set => eeg.LowAlarm = value; }
@@ -108,6 +133,7 @@ namespace PatientMonitor
         public string EEGHighAlarmString { get => eeg.HighAlarmString; }
 
         //Properties for EMG
+        public EMG Emg { get => emg; }
         public double EMGAmplitude { get => emg.Amplitude; set => emg.Amplitude = value; }
         public double EMGFrequency { get => emg.Frequency; set => emg.Frequency = value; }
         public double EMGLowAlarm { get => emg.LowAlarm; set => emg.LowAlarm = value; }
@@ -117,6 +143,7 @@ namespace PatientMonitor
 
 
         //Properties for Respiration
+        public Respiration Respiration { get => respiration; }
         public double RespirationAmplitude { get => respiration.Amplitude; set => respiration.Amplitude = value; }
         public double RespirationFrequency { get => respiration.Frequency; set => respiration.Frequency = value; }
         public double RespirationLowAlarm { get => respiration.LowAlarm; set => respiration.LowAlarm = value; }

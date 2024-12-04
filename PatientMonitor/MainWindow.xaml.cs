@@ -32,8 +32,11 @@ namespace PatientMonitor
         private DispatcherTimer timer;
         private int index = 0;
         Patient patient;
+        StationaryPatient stationaryPatient;
         MonitorConstants.Parameter parameter = MonitorConstants.Parameter.ECG;
+        MonitorConstants.clinic clinic = MonitorConstants.clinic.Cardiology;
         private MRImaging mrImaging = new MRImaging();
+        Database database;
 
         string patientNameTemp;
         int patientAgeTemp;
@@ -44,10 +47,12 @@ namespace PatientMonitor
         double lowAlarmTemp = 0;
         double highAlarmTemp = 0;
         bool wasPatientCreated = false;
+        string roomNumberTemp;
 
         public MainWindow()
         {
             InitializeComponent();
+            database = new Database();
             dataPoints = new ObservableCollection<KeyValuePair<int, double>>();
             lineSeriesTime.ItemsSource = dataPoints; // Bind the series to the data points
 
@@ -65,18 +70,38 @@ namespace PatientMonitor
         {
             // Real time calculation
             double currentTimeInSeconds = index / 6000.0; // 6000 perfect value for 50hz really beeing 50Hz
+            var lastPatient = database.Data.FindLast(p => true); // Holt das letzte Element, falls vorhanden
 
-            // Generate datapoint
-            if (patient != null)
+            if (!(lastPatient is StationaryPatient))
             {
-                dataPoints.Add(new KeyValuePair<int, double>(index++, patient.NextSample(currentTimeInSeconds, parameter)));
+                // Generate datapoint
+                if (patient != null)
+                {
+                    dataPoints.Add(new KeyValuePair<int, double>(index++, patient.NextSample(currentTimeInSeconds, parameter)));
+                }
+
+                // Delete datapoints to clear the diagram
+                if (dataPoints.Count > 200) // Max count of points
+                {
+                    dataPoints.RemoveAt(0); // Delete last point
+                }
+            }
+            else
+            {
+                // Generate datapoint
+                if (stationaryPatient != null)
+                {
+                    dataPoints.Add(new KeyValuePair<int, double>(index++, stationaryPatient.NextSample(currentTimeInSeconds, parameter)));
+                }
+
+                // Delete datapoints to clear the diagram
+                if (dataPoints.Count > 200) // Max count of points
+                {
+                    dataPoints.RemoveAt(0); // Delete last point
+                }
             }
 
-            // Delete datapoints to clear the diagram
-            if (dataPoints.Count > 200) // Max count of points
-            {
-                dataPoints.RemoveAt(0); // Delete last point
-            }
+
         }
         
 
@@ -137,30 +162,73 @@ namespace PatientMonitor
 
             double.TryParse(TextBoxFrequencyValue.Text, out double parsedFrequency);
             frequencyTemp = parsedFrequency;
+            
+
+
             if (wasPatientCreated)
             {
-                switch (parameter)
+                var lastPatient = database.Data.FindLast(p => true); // Holt das letzte Element, falls vorhanden
+
+                if (!(lastPatient is StationaryPatient))
                 {
-                    case MonitorConstants.Parameter.ECG: patient.ECGFrequency = frequencyTemp;
-                        patient.displayLowAlarm(parameter, patient.ECGFrequency, patient.ECGLowAlarm);
-                        patient.displayHighAlarm(parameter, patient.ECGFrequency, patient.ECGHighAlarm);
-                        TextBlockDisplayLowAlarm.Text = patient.ECGLowAlarmString;
-                        TextBlockDisplayHighAlarm.Text = patient.ECGHighAlarmString; break;
-                    case MonitorConstants.Parameter.EMG: patient.EMGFrequency = frequencyTemp;
-                        patient.displayLowAlarm(parameter, patient.EMGFrequency, patient.EMGLowAlarm);
-                        patient.displayHighAlarm(parameter, patient.EMGFrequency, patient.EMGHighAlarm);
-                        TextBlockDisplayLowAlarm.Text = patient.EMGLowAlarmString;
-                        TextBlockDisplayHighAlarm.Text = patient.EMGHighAlarmString; break;
-                    case MonitorConstants.Parameter.EEG: patient.EEGFrequency = frequencyTemp;
-                        patient.displayLowAlarm(parameter, patient.EEGFrequency, patient.EEGLowAlarm);
-                        patient.displayHighAlarm(parameter, patient.EEGFrequency, patient.EEGHighAlarm);
-                        TextBlockDisplayLowAlarm.Text = patient.EEGLowAlarmString;
-                        TextBlockDisplayHighAlarm.Text = patient.EEGHighAlarmString; break;
-                    case MonitorConstants.Parameter.Respiration: patient.RespirationFrequency = frequencyTemp;
-                        patient.displayLowAlarm(parameter, patient.RespirationFrequency, patient.RespirationLowAlarm);
-                        patient.displayHighAlarm(parameter, patient.RespirationFrequency, patient.RespirationHighAlarm);
-                        TextBlockDisplayLowAlarm.Text = patient.RespirationLowAlarmString;
-                        TextBlockDisplayHighAlarm.Text = patient.RespirationHighAlarmString; break;
+
+                    switch (parameter)
+                    {
+                        case MonitorConstants.Parameter.ECG:
+                            patient.ECGFrequency = frequencyTemp;
+                            patient.displayLowAlarm(parameter, patient.ECGFrequency, patient.ECGLowAlarm);
+                            patient.displayHighAlarm(parameter, patient.ECGFrequency, patient.ECGHighAlarm);
+                            TextBlockDisplayLowAlarm.Text = patient.ECGLowAlarmString;
+                            TextBlockDisplayHighAlarm.Text = patient.ECGHighAlarmString; break;
+                        case MonitorConstants.Parameter.EMG:
+                            patient.EMGFrequency = frequencyTemp;
+                            patient.displayLowAlarm(parameter, patient.EMGFrequency, patient.EMGLowAlarm);
+                            patient.displayHighAlarm(parameter, patient.EMGFrequency, patient.EMGHighAlarm);
+                            TextBlockDisplayLowAlarm.Text = patient.EMGLowAlarmString;
+                            TextBlockDisplayHighAlarm.Text = patient.EMGHighAlarmString; break;
+                        case MonitorConstants.Parameter.EEG:
+                            patient.EEGFrequency = frequencyTemp;
+                            patient.displayLowAlarm(parameter, patient.EEGFrequency, patient.EEGLowAlarm);
+                            patient.displayHighAlarm(parameter, patient.EEGFrequency, patient.EEGHighAlarm);
+                            TextBlockDisplayLowAlarm.Text = patient.EEGLowAlarmString;
+                            TextBlockDisplayHighAlarm.Text = patient.EEGHighAlarmString; break;
+                        case MonitorConstants.Parameter.Respiration:
+                            patient.RespirationFrequency = frequencyTemp;
+                            patient.displayLowAlarm(parameter, patient.RespirationFrequency, patient.RespirationLowAlarm);
+                            patient.displayHighAlarm(parameter, patient.RespirationFrequency, patient.RespirationHighAlarm);
+                            TextBlockDisplayLowAlarm.Text = patient.RespirationLowAlarmString;
+                            TextBlockDisplayHighAlarm.Text = patient.RespirationHighAlarmString; break;
+                    }
+                }
+                else
+                {
+                    switch (parameter)
+                    {
+                        case MonitorConstants.Parameter.ECG:
+                            stationaryPatient.ECGFrequency = frequencyTemp;
+                            stationaryPatient.displayLowAlarm(parameter, stationaryPatient.ECGFrequency, stationaryPatient.ECGLowAlarm);
+                            stationaryPatient.displayHighAlarm(parameter, stationaryPatient.ECGFrequency, stationaryPatient.ECGHighAlarm);
+                            TextBlockDisplayLowAlarm.Text = stationaryPatient.ECGLowAlarmString;
+                            TextBlockDisplayHighAlarm.Text = stationaryPatient.ECGHighAlarmString; break;
+                        case MonitorConstants.Parameter.EMG:
+                            stationaryPatient.EMGFrequency = frequencyTemp;
+                            stationaryPatient.displayLowAlarm(parameter, stationaryPatient.EMGFrequency, stationaryPatient.EMGLowAlarm);
+                            stationaryPatient.displayHighAlarm(parameter, stationaryPatient.EMGFrequency, stationaryPatient.EMGHighAlarm);
+                            TextBlockDisplayLowAlarm.Text = stationaryPatient.EMGLowAlarmString;
+                            TextBlockDisplayHighAlarm.Text = stationaryPatient.EMGHighAlarmString; break;
+                        case MonitorConstants.Parameter.EEG:
+                            stationaryPatient.EEGFrequency = frequencyTemp;
+                            stationaryPatient.displayLowAlarm(parameter, stationaryPatient.EEGFrequency, stationaryPatient.EEGLowAlarm);
+                            stationaryPatient.displayHighAlarm(parameter, stationaryPatient.EEGFrequency, stationaryPatient.EEGHighAlarm);
+                            TextBlockDisplayLowAlarm.Text = stationaryPatient.EEGLowAlarmString;
+                            TextBlockDisplayHighAlarm.Text = stationaryPatient.EEGHighAlarmString; break;
+                        case MonitorConstants.Parameter.Respiration:
+                            stationaryPatient.RespirationFrequency = frequencyTemp;
+                            stationaryPatient.displayLowAlarm(parameter, stationaryPatient.RespirationFrequency, stationaryPatient.RespirationLowAlarm);
+                            stationaryPatient.displayHighAlarm(parameter, stationaryPatient.RespirationFrequency, stationaryPatient.RespirationHighAlarm);
+                            TextBlockDisplayLowAlarm.Text = stationaryPatient.RespirationLowAlarmString;
+                            TextBlockDisplayHighAlarm.Text = stationaryPatient.RespirationHighAlarmString; break;
+                    }
                 }
             }
 
@@ -197,14 +265,30 @@ namespace PatientMonitor
         private void SliderAmplitudeValue_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             amplitudeValue = SliderAmplitudeValue.Value;
+            
             if (wasPatientCreated)
             {
-                switch (parameter)
+                var lastPatient = database.Data.FindLast(p => true); // Holt das letzte Element, falls vorhanden
+
+                if (!(lastPatient is StationaryPatient))
                 {
-                    case MonitorConstants.Parameter.ECG: patient.ECGAmplitude = SliderAmplitudeValue.Value; break;
-                    case MonitorConstants.Parameter.EMG: patient.EMGAmplitude = SliderAmplitudeValue.Value; break;
-                    case MonitorConstants.Parameter.EEG: patient.EEGAmplitude = SliderAmplitudeValue.Value; break;
-                    case MonitorConstants.Parameter.Respiration: patient.RespirationAmplitude = SliderAmplitudeValue.Value; break;
+                    switch (parameter)
+                    {
+                        case MonitorConstants.Parameter.ECG: patient.ECGAmplitude = SliderAmplitudeValue.Value; break;
+                        case MonitorConstants.Parameter.EMG: patient.EMGAmplitude = SliderAmplitudeValue.Value; break;
+                        case MonitorConstants.Parameter.EEG: patient.EEGAmplitude = SliderAmplitudeValue.Value; break;
+                        case MonitorConstants.Parameter.Respiration: patient.RespirationAmplitude = SliderAmplitudeValue.Value; break;
+                    }
+                }
+                else
+                {
+                    switch (parameter)
+                    {
+                        case MonitorConstants.Parameter.ECG: stationaryPatient.ECGAmplitude = SliderAmplitudeValue.Value; break;
+                        case MonitorConstants.Parameter.EMG: stationaryPatient.EMGAmplitude = SliderAmplitudeValue.Value; break;
+                        case MonitorConstants.Parameter.EEG: stationaryPatient.EEGAmplitude = SliderAmplitudeValue.Value; break;
+                        case MonitorConstants.Parameter.Respiration: stationaryPatient.RespirationAmplitude = SliderAmplitudeValue.Value; break;
+                    }
                 }
             }
         }
@@ -213,16 +297,31 @@ namespace PatientMonitor
         {
             bool ageValid = int.TryParse(PatientAgeTextBox.Text, out int _);
 
-            if (PatientNameTextBox.Text != "Enter name here" && !string.IsNullOrWhiteSpace(PatientNameTextBox.Text) && ageValid && DatePickerDate.SelectedDate.HasValue)
+            if (PatientNameTextBox.Text != "Enter name here" && !string.IsNullOrWhiteSpace(PatientNameTextBox.Text) && ageValid && DatePickerDate.SelectedDate.HasValue
+                && (RadioButtonAmbulatory.IsChecked == true || RadioButtonStationary.IsChecked == true) && TextBoxRoomNumber.Text != "Enter room number")
             {
-                patient = new Patient(patientNameTemp, dateTemp, patientAgeTemp, amplitudeValue, frequencyTemp, harmonicsTemp);
-                MessageBox.Show("Patient " + patientNameTemp + " was created!");
-                wasPatientCreated = true;
-                buttonStartSimulation.IsEnabled = true;
+                if (RadioButtonAmbulatory.IsChecked == true)
+                {
+                    clinic = (MonitorConstants.clinic)ComboBoxClinic.SelectedIndex;
+                    patient = new Patient(patientNameTemp, dateTemp, patientAgeTemp, amplitudeValue, frequencyTemp, harmonicsTemp,clinic);
+                    MessageBox.Show("Patient " + patientNameTemp + " was created!");
+                    database.AddPatient(patient);
+                    wasPatientCreated = true;
+                    buttonStartSimulation.IsEnabled = true;
+
+                } else if (RadioButtonStationary.IsChecked == true){
+
+                    clinic = (MonitorConstants.clinic)ComboBoxClinic.SelectedIndex;
+                    stationaryPatient = new StationaryPatient(patientNameTemp, dateTemp, patientAgeTemp, amplitudeValue, frequencyTemp, harmonicsTemp, clinic, roomNumberTemp);
+                    MessageBox.Show("Stationary Patient " + patientNameTemp + " was created!");
+                    database.AddPatient(stationaryPatient);
+                    wasPatientCreated = true;
+                    buttonStartSimulation.IsEnabled = true;
+                }
             }
             else
             {
-                MessageBox.Show("Fill all boxes!");
+                MessageBox.Show("Please fill in all required fields!");
             }
 
         }
@@ -257,61 +356,134 @@ namespace PatientMonitor
             }
 
 
+           
+
             if (wasPatientCreated)
             {
-                switch (parameter)
+                var lastPatient = database.Data.FindLast(p => true); // Holt das letzte Element, falls vorhanden
+
+                if (!(lastPatient is StationaryPatient))
                 {
-                    case MonitorConstants.Parameter.ECG: SliderAmplitudeValue.Value = patient.ECGAmplitude;
-                        TextBoxFrequencyValue.Text = patient.ECGFrequency.ToString();
-                        ComboBoxHarmonics.SelectedIndex = patient.ECGHarmonics;
-                        if (patient.ECGFrequency == 0.0) { patient.ECGFrequency = frequencyTemp; }
 
-                        patient.displayLowAlarm(parameter, patient.ECGFrequency, patient.ECGLowAlarm);
-                        patient.displayHighAlarm(parameter, patient.ECGFrequency, patient.ECGHighAlarm);
-                        TextBlockDisplayLowAlarm.Text = patient.ECGLowAlarmString;
-                        TextBlockDisplayHighAlarm.Text = patient.ECGHighAlarmString;
-                        TextBoxLowAlarmValue.Text = patient.ECGLowAlarm.ToString();
-                        TextBoxHighAlarmValue.Text = patient.ECGHighAlarm.ToString();
-                        break;
+                    switch (parameter)
+                    {
+                        case MonitorConstants.Parameter.ECG:
+                            SliderAmplitudeValue.Value = patient.ECGAmplitude;
+                            TextBoxFrequencyValue.Text = patient.ECGFrequency.ToString();
+                            ComboBoxHarmonics.SelectedIndex = patient.ECGHarmonics;
+                            if (patient.ECGFrequency == 0.0) { patient.ECGFrequency = frequencyTemp; }
 
-                    case MonitorConstants.Parameter.EMG: SliderAmplitudeValue.Value = patient.EMGAmplitude;
-                        TextBoxFrequencyValue.Text = patient.EMGFrequency.ToString();
-                        ComboBoxHarmonics.SelectedIndex = -1;
-                        if (patient.EMGFrequency == 0.0) { patient.EMGFrequency = frequencyTemp; }
+                            patient.displayLowAlarm(parameter, patient.ECGFrequency, patient.ECGLowAlarm);
+                            patient.displayHighAlarm(parameter, patient.ECGFrequency, patient.ECGHighAlarm);
+                            TextBlockDisplayLowAlarm.Text = patient.ECGLowAlarmString;
+                            TextBlockDisplayHighAlarm.Text = patient.ECGHighAlarmString;
+                            TextBoxLowAlarmValue.Text = patient.ECGLowAlarm.ToString();
+                            TextBoxHighAlarmValue.Text = patient.ECGHighAlarm.ToString();
+                            break;
 
-                        patient.displayLowAlarm(parameter, patient.EMGFrequency, patient.EMGLowAlarm);
-                        patient.displayHighAlarm(parameter, patient.EMGFrequency, patient.EMGHighAlarm);
-                        TextBlockDisplayLowAlarm.Text = patient.EMGLowAlarmString;
-                        TextBlockDisplayHighAlarm.Text = patient.EMGHighAlarmString;
-                        TextBoxLowAlarmValue.Text = patient.EMGLowAlarm.ToString();
-                        TextBoxHighAlarmValue.Text = patient.EMGHighAlarm.ToString(); 
-                        break;
+                        case MonitorConstants.Parameter.EMG:
+                            SliderAmplitudeValue.Value = patient.EMGAmplitude;
+                            TextBoxFrequencyValue.Text = patient.EMGFrequency.ToString();
+                            ComboBoxHarmonics.SelectedIndex = -1;
+                            if (patient.EMGFrequency == 0.0) { patient.EMGFrequency = frequencyTemp; }
 
-                    case MonitorConstants.Parameter.EEG: SliderAmplitudeValue.Value = patient.EEGAmplitude;
-                        TextBoxFrequencyValue.Text = patient.EEGFrequency.ToString();
-                        ComboBoxHarmonics.SelectedIndex = -1;
-                        if (patient.EEGFrequency == 0.0) { patient.EEGFrequency = frequencyTemp; }
+                            patient.displayLowAlarm(parameter, patient.EMGFrequency, patient.EMGLowAlarm);
+                            patient.displayHighAlarm(parameter, patient.EMGFrequency, patient.EMGHighAlarm);
+                            TextBlockDisplayLowAlarm.Text = patient.EMGLowAlarmString;
+                            TextBlockDisplayHighAlarm.Text = patient.EMGHighAlarmString;
+                            TextBoxLowAlarmValue.Text = patient.EMGLowAlarm.ToString();
+                            TextBoxHighAlarmValue.Text = patient.EMGHighAlarm.ToString();
+                            break;
 
-                        patient.displayLowAlarm(parameter, patient.EEGFrequency, patient.EEGLowAlarm);
-                        patient.displayHighAlarm(parameter, patient.EEGFrequency, patient.EEGHighAlarm);
-                        TextBlockDisplayLowAlarm.Text = patient.EEGLowAlarmString;
-                        TextBlockDisplayHighAlarm.Text = patient.EEGHighAlarmString;
-                        TextBoxLowAlarmValue.Text = patient.EEGLowAlarm.ToString();
-                        TextBoxHighAlarmValue.Text = patient.EEGHighAlarm.ToString(); 
-                        break;
+                        case MonitorConstants.Parameter.EEG:
+                            SliderAmplitudeValue.Value = patient.EEGAmplitude;
+                            TextBoxFrequencyValue.Text = patient.EEGFrequency.ToString();
+                            ComboBoxHarmonics.SelectedIndex = -1;
+                            if (patient.EEGFrequency == 0.0) { patient.EEGFrequency = frequencyTemp; }
 
-                    case MonitorConstants.Parameter.Respiration: SliderAmplitudeValue.Value = patient.RespirationAmplitude;
-                        TextBoxFrequencyValue.Text = patient.RespirationFrequency.ToString();
-                        ComboBoxHarmonics.SelectedIndex = -1;
-                        if (patient.RespirationFrequency == 0.0) { patient.RespirationFrequency = frequencyTemp; }
+                            patient.displayLowAlarm(parameter, patient.EEGFrequency, patient.EEGLowAlarm);
+                            patient.displayHighAlarm(parameter, patient.EEGFrequency, patient.EEGHighAlarm);
+                            TextBlockDisplayLowAlarm.Text = patient.EEGLowAlarmString;
+                            TextBlockDisplayHighAlarm.Text = patient.EEGHighAlarmString;
+                            TextBoxLowAlarmValue.Text = patient.EEGLowAlarm.ToString();
+                            TextBoxHighAlarmValue.Text = patient.EEGHighAlarm.ToString();
+                            break;
 
-                        patient.displayLowAlarm(parameter, patient.RespirationFrequency, patient.RespirationLowAlarm);
-                        patient.displayHighAlarm(parameter, patient.RespirationFrequency, patient.RespirationHighAlarm);
-                        TextBlockDisplayLowAlarm.Text = patient.RespirationLowAlarmString;
-                        TextBlockDisplayHighAlarm.Text = patient.RespirationHighAlarmString;
-                        TextBoxLowAlarmValue.Text = patient.RespirationLowAlarm.ToString();
-                        TextBoxHighAlarmValue.Text = patient.RespirationHighAlarm.ToString(); 
-                        break;
+                        case MonitorConstants.Parameter.Respiration:
+                            SliderAmplitudeValue.Value = patient.RespirationAmplitude;
+                            TextBoxFrequencyValue.Text = patient.RespirationFrequency.ToString();
+                            ComboBoxHarmonics.SelectedIndex = -1;
+                            if (patient.RespirationFrequency == 0.0) { patient.RespirationFrequency = frequencyTemp; }
+
+                            patient.displayLowAlarm(parameter, patient.RespirationFrequency, patient.RespirationLowAlarm);
+                            patient.displayHighAlarm(parameter, patient.RespirationFrequency, patient.RespirationHighAlarm);
+                            TextBlockDisplayLowAlarm.Text = patient.RespirationLowAlarmString;
+                            TextBlockDisplayHighAlarm.Text = patient.RespirationHighAlarmString;
+                            TextBoxLowAlarmValue.Text = patient.RespirationLowAlarm.ToString();
+                            TextBoxHighAlarmValue.Text = patient.RespirationHighAlarm.ToString();
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (parameter)
+                    {
+                        case MonitorConstants.Parameter.ECG:
+                            SliderAmplitudeValue.Value = stationaryPatient.ECGAmplitude;
+                            TextBoxFrequencyValue.Text = stationaryPatient.ECGFrequency.ToString();
+                            ComboBoxHarmonics.SelectedIndex = stationaryPatient.ECGHarmonics;
+                            if (stationaryPatient.ECGFrequency == 0.0) { stationaryPatient.ECGFrequency = frequencyTemp; }
+
+                            stationaryPatient.displayLowAlarm(parameter, stationaryPatient.ECGFrequency, stationaryPatient.ECGLowAlarm);
+                            stationaryPatient.displayHighAlarm(parameter, stationaryPatient.ECGFrequency, stationaryPatient.ECGHighAlarm);
+                            TextBlockDisplayLowAlarm.Text = stationaryPatient.ECGLowAlarmString;
+                            TextBlockDisplayHighAlarm.Text = stationaryPatient.ECGHighAlarmString;
+                            TextBoxLowAlarmValue.Text = stationaryPatient.ECGLowAlarm.ToString();
+                            TextBoxHighAlarmValue.Text = stationaryPatient.ECGHighAlarm.ToString();
+                            break;
+
+                        case MonitorConstants.Parameter.EMG:
+                            SliderAmplitudeValue.Value = stationaryPatient.EMGAmplitude;
+                            TextBoxFrequencyValue.Text = stationaryPatient.EMGFrequency.ToString();
+                            ComboBoxHarmonics.SelectedIndex = -1;
+                            if (stationaryPatient.EMGFrequency == 0.0) { stationaryPatient.EMGFrequency = frequencyTemp; }
+
+                            stationaryPatient.displayLowAlarm(parameter, stationaryPatient.EMGFrequency, stationaryPatient.EMGLowAlarm);
+                            stationaryPatient.displayHighAlarm(parameter, stationaryPatient.EMGFrequency, stationaryPatient.EMGHighAlarm);
+                            TextBlockDisplayLowAlarm.Text = stationaryPatient.EMGLowAlarmString;
+                            TextBlockDisplayHighAlarm.Text = stationaryPatient.EMGHighAlarmString;
+                            TextBoxLowAlarmValue.Text = stationaryPatient.EMGLowAlarm.ToString();
+                            TextBoxHighAlarmValue.Text = stationaryPatient.EMGHighAlarm.ToString();
+                            break;
+
+                        case MonitorConstants.Parameter.EEG:
+                            SliderAmplitudeValue.Value = stationaryPatient.EEGAmplitude;
+                            TextBoxFrequencyValue.Text = stationaryPatient.EEGFrequency.ToString();
+                            ComboBoxHarmonics.SelectedIndex = -1;
+                            if (stationaryPatient.EEGFrequency == 0.0) { stationaryPatient.EEGFrequency = frequencyTemp; }
+
+                            stationaryPatient.displayLowAlarm(parameter, stationaryPatient.EEGFrequency, stationaryPatient.EEGLowAlarm);
+                            stationaryPatient.displayHighAlarm(parameter, stationaryPatient.EEGFrequency, stationaryPatient.EEGHighAlarm);
+                            TextBlockDisplayLowAlarm.Text = stationaryPatient.EEGLowAlarmString;
+                            TextBlockDisplayHighAlarm.Text = stationaryPatient.EEGHighAlarmString;
+                            TextBoxLowAlarmValue.Text = stationaryPatient.EEGLowAlarm.ToString();
+                            TextBoxHighAlarmValue.Text = stationaryPatient.EEGHighAlarm.ToString();
+                            break;
+
+                        case MonitorConstants.Parameter.Respiration:
+                            SliderAmplitudeValue.Value = stationaryPatient.RespirationAmplitude;
+                            TextBoxFrequencyValue.Text = stationaryPatient.RespirationFrequency.ToString();
+                            ComboBoxHarmonics.SelectedIndex = -1;
+                            if (stationaryPatient.RespirationFrequency == 0.0) { stationaryPatient.RespirationFrequency = frequencyTemp; }
+
+                            stationaryPatient.displayLowAlarm(parameter, stationaryPatient.RespirationFrequency, stationaryPatient.RespirationLowAlarm);
+                            stationaryPatient.displayHighAlarm(parameter, stationaryPatient.RespirationFrequency, stationaryPatient.RespirationHighAlarm);
+                            TextBlockDisplayLowAlarm.Text = stationaryPatient.RespirationLowAlarmString;
+                            TextBlockDisplayHighAlarm.Text = stationaryPatient.RespirationHighAlarmString;
+                            TextBoxLowAlarmValue.Text = stationaryPatient.RespirationLowAlarm.ToString();
+                            TextBoxHighAlarmValue.Text = stationaryPatient.RespirationHighAlarm.ToString();
+                            break;
+                    }
                 }
             }
         }
@@ -337,21 +509,53 @@ namespace PatientMonitor
 
             if (wasPatientCreated)
             {
-                switch (parameter)
+                var lastPatient = database.Data.FindLast(p => true); // Holt das letzte Element, falls vorhanden
+
+                if (!(lastPatient is StationaryPatient))
                 {
-                    case MonitorConstants.Parameter.ECG: patient.ECGLowAlarm = lowAlarmTemp; 
-                        patient.displayLowAlarm(parameter, patient.ECGFrequency, patient.ECGLowAlarm);
-                        TextBlockDisplayLowAlarm.Text = patient.ECGLowAlarmString; break;
-                    case MonitorConstants.Parameter.EMG: patient.EMGLowAlarm = lowAlarmTemp; 
-                        patient.displayLowAlarm(parameter, patient.EMGFrequency, patient.EMGLowAlarm);
-                        TextBlockDisplayLowAlarm.Text = patient.EMGLowAlarmString; break;
-                    case MonitorConstants.Parameter.EEG: patient.EEGLowAlarm = lowAlarmTemp; 
-                        patient.displayLowAlarm(parameter, patient.EEGFrequency, patient.EEGLowAlarm);
-                        TextBlockDisplayLowAlarm.Text = patient.EEGLowAlarmString; break;
-                    case MonitorConstants.Parameter.Respiration: patient.RespirationLowAlarm = lowAlarmTemp; 
-                        patient.displayLowAlarm(parameter, patient.RespirationFrequency, patient.RespirationLowAlarm);
-                        TextBlockDisplayLowAlarm.Text = patient.RespirationLowAlarmString; break;
+                    switch (parameter)
+                    {
+                        case MonitorConstants.Parameter.ECG:
+                            patient.ECGLowAlarm = lowAlarmTemp;
+                            patient.displayLowAlarm(parameter, patient.ECGFrequency, patient.ECGLowAlarm);
+                            TextBlockDisplayLowAlarm.Text = patient.ECGLowAlarmString; break;
+                        case MonitorConstants.Parameter.EMG:
+                            patient.EMGLowAlarm = lowAlarmTemp;
+                            patient.displayLowAlarm(parameter, patient.EMGFrequency, patient.EMGLowAlarm);
+                            TextBlockDisplayLowAlarm.Text = patient.EMGLowAlarmString; break;
+                        case MonitorConstants.Parameter.EEG:
+                            patient.EEGLowAlarm = lowAlarmTemp;
+                            patient.displayLowAlarm(parameter, patient.EEGFrequency, patient.EEGLowAlarm);
+                            TextBlockDisplayLowAlarm.Text = patient.EEGLowAlarmString; break;
+                        case MonitorConstants.Parameter.Respiration:
+                            patient.RespirationLowAlarm = lowAlarmTemp;
+                            patient.displayLowAlarm(parameter, patient.RespirationFrequency, patient.RespirationLowAlarm);
+                            TextBlockDisplayLowAlarm.Text = patient.RespirationLowAlarmString; break;
+                    }
+                } 
+                else
+                {
+                    switch (parameter)
+                    {
+                        case MonitorConstants.Parameter.ECG:
+                            stationaryPatient.ECGLowAlarm = lowAlarmTemp;
+                            stationaryPatient.displayLowAlarm(parameter, stationaryPatient.ECGFrequency, stationaryPatient.ECGLowAlarm);
+                            TextBlockDisplayLowAlarm.Text = stationaryPatient.ECGLowAlarmString; break;
+                        case MonitorConstants.Parameter.EMG:
+                            stationaryPatient.EMGLowAlarm = lowAlarmTemp;
+                            stationaryPatient.displayLowAlarm(parameter, stationaryPatient.EMGFrequency, stationaryPatient.EMGLowAlarm);
+                            TextBlockDisplayLowAlarm.Text = stationaryPatient.EMGLowAlarmString; break;
+                        case MonitorConstants.Parameter.EEG:
+                            stationaryPatient.EEGLowAlarm = lowAlarmTemp;
+                            stationaryPatient.displayLowAlarm(parameter, stationaryPatient.EEGFrequency, stationaryPatient.EEGLowAlarm);
+                            TextBlockDisplayLowAlarm.Text = stationaryPatient.EEGLowAlarmString; break;
+                        case MonitorConstants.Parameter.Respiration:
+                            stationaryPatient.RespirationLowAlarm = lowAlarmTemp;
+                            stationaryPatient.displayLowAlarm(parameter, stationaryPatient.RespirationFrequency, stationaryPatient.RespirationLowAlarm);
+                            TextBlockDisplayLowAlarm.Text = stationaryPatient.RespirationLowAlarmString; break;
+                    }
                 }
+
             }
         }
 
@@ -362,25 +566,53 @@ namespace PatientMonitor
 
             if (wasPatientCreated)
             {
-                switch (parameter)
+                var lastPatient = database.Data.FindLast(p => true); // Holt das letzte Element, falls vorhanden
+
+                if (!(lastPatient is StationaryPatient))
                 {
-                    case MonitorConstants.Parameter.ECG:
-                        patient.ECGHighAlarm = highAlarmTemp;
-                        patient.displayHighAlarm(parameter, patient.ECGFrequency, patient.ECGHighAlarm);
-                        TextBlockDisplayHighAlarm.Text = patient.ECGHighAlarmString; break;
-                    case MonitorConstants.Parameter.EMG:
-                        patient.EMGHighAlarm = highAlarmTemp;
-                        patient.displayHighAlarm(parameter, patient.EMGFrequency, patient.EMGHighAlarm);
-                        TextBlockDisplayHighAlarm.Text = patient.EMGHighAlarmString; break;
-                    case MonitorConstants.Parameter.EEG:
-                        patient.EEGHighAlarm = highAlarmTemp;
-                        patient.displayHighAlarm(parameter, patient.EEGFrequency, patient.EEGHighAlarm);
-                        TextBlockDisplayHighAlarm.Text = patient.EEGHighAlarmString; break;
-                    case MonitorConstants.Parameter.Respiration:
-                        patient.RespirationHighAlarm = highAlarmTemp;
-                        patient.displayHighAlarm(parameter, patient.RespirationFrequency, patient.RespirationHighAlarm);
-                        TextBlockDisplayHighAlarm.Text = patient.RespirationHighAlarmString; break;
+                    switch (parameter)
+                    {
+                        case MonitorConstants.Parameter.ECG:
+                            patient.ECGHighAlarm = highAlarmTemp;
+                            patient.displayHighAlarm(parameter, patient.ECGFrequency, patient.ECGHighAlarm);
+                            TextBlockDisplayHighAlarm.Text = patient.ECGHighAlarmString; break;
+                        case MonitorConstants.Parameter.EMG:
+                            patient.EMGHighAlarm = highAlarmTemp;
+                            patient.displayHighAlarm(parameter, patient.EMGFrequency, patient.EMGHighAlarm);
+                            TextBlockDisplayHighAlarm.Text = patient.EMGHighAlarmString; break;
+                        case MonitorConstants.Parameter.EEG:
+                            patient.EEGHighAlarm = highAlarmTemp;
+                            patient.displayHighAlarm(parameter, patient.EEGFrequency, patient.EEGHighAlarm);
+                            TextBlockDisplayHighAlarm.Text = patient.EEGHighAlarmString; break;
+                        case MonitorConstants.Parameter.Respiration:
+                            patient.RespirationHighAlarm = highAlarmTemp;
+                            patient.displayHighAlarm(parameter, patient.RespirationFrequency, patient.RespirationHighAlarm);
+                            TextBlockDisplayHighAlarm.Text = patient.RespirationHighAlarmString; break;
+                    }
                 }
+                else
+                {
+                    switch (parameter)
+                    {
+                        case MonitorConstants.Parameter.ECG:
+                            stationaryPatient.ECGHighAlarm = highAlarmTemp;
+                            stationaryPatient.displayHighAlarm(parameter, stationaryPatient.ECGFrequency, stationaryPatient.ECGHighAlarm);
+                            TextBlockDisplayHighAlarm.Text = stationaryPatient.ECGHighAlarmString; break;
+                        case MonitorConstants.Parameter.EMG:
+                            stationaryPatient.EMGHighAlarm = highAlarmTemp;
+                            stationaryPatient.displayHighAlarm(parameter, stationaryPatient.EMGFrequency, stationaryPatient.EMGHighAlarm);
+                            TextBlockDisplayHighAlarm.Text = stationaryPatient.EMGHighAlarmString; break;
+                        case MonitorConstants.Parameter.EEG:
+                            stationaryPatient.EEGHighAlarm = highAlarmTemp;
+                            stationaryPatient.displayHighAlarm(parameter, stationaryPatient.EEGFrequency, stationaryPatient.EEGHighAlarm);
+                            TextBlockDisplayHighAlarm.Text = stationaryPatient.EEGHighAlarmString; break;
+                        case MonitorConstants.Parameter.Respiration:
+                            stationaryPatient.RespirationHighAlarm = highAlarmTemp;
+                            stationaryPatient.displayHighAlarm(parameter, stationaryPatient.RespirationFrequency, stationaryPatient.RespirationHighAlarm);
+                            TextBlockDisplayHighAlarm.Text = stationaryPatient.RespirationHighAlarmString; break;
+                    }
+                }
+                
             }
         }
 
@@ -416,37 +648,78 @@ namespace PatientMonitor
 
         private void ButtonFourierTransformation_Click(object sender, RoutedEventArgs e)
         {
-            lineSeriesFFT.ItemsSource = null;
+            var lastPatient = database.Data.FindLast(p => true); // Holt das letzte Element, falls vorhanden
 
-            if (patient != null && patient.SampleList.Count >= 512)
+            if (!(lastPatient is StationaryPatient))
             {
-                // Letzte 512 Punkte mit Skip
-                double[] sampleArray = patient.SampleList.Skip(patient.SampleList.Count - 512).ToArray();
 
-                // Erstellung Spektrum-Objekt und Fourier-Transformation
-                Spektrum spektrum = new Spektrum(sampleArray.Length);
-                double[] frequencySpectrum = spektrum.FFT(sampleArray, sampleArray.Length);
+                lineSeriesFFT.ItemsSource = null;
 
-                // Frequenzdaten binden an neue lineSeries
-                ObservableCollection<KeyValuePair<int, double>> frequencyDataPoints = new ObservableCollection<KeyValuePair<int, double>>();
-                double samplingRate = 6000;
-                for (int i = 0; i < frequencySpectrum.Length; i++)
+                if (patient != null && patient.SampleList.Count >= 512)
                 {
-                    double frequency = i * (samplingRate / sampleArray.Length); // Frequenz berechnen
-                    frequencyDataPoints.Add(new KeyValuePair<int, double>((int)frequency, frequencySpectrum[i]));
+                    // Letzte 512 Punkte mit Skip
+                    double[] sampleArray = patient.SampleList.Skip(patient.SampleList.Count - 512).ToArray();
+
+                    // Erstellung Spektrum-Objekt und Fourier-Transformation
+                    Spektrum spektrum = new Spektrum(sampleArray.Length);
+                    double[] frequencySpectrum = spektrum.FFT(sampleArray, sampleArray.Length);
+
+                    // Frequenzdaten binden an neue lineSeries
+                    ObservableCollection<KeyValuePair<int, double>> frequencyDataPoints = new ObservableCollection<KeyValuePair<int, double>>();
+                    double samplingRate = 6000;
+                    for (int i = 0; i < frequencySpectrum.Length; i++)
+                    {
+                        double frequency = i * (samplingRate / sampleArray.Length); // Frequenz berechnen
+                        frequencyDataPoints.Add(new KeyValuePair<int, double>((int)frequency, frequencySpectrum[i]));
+                    }
+
+                    //LineSeries für Frequenz aktualisieren
+                    lineSeriesFFT.ItemsSource = frequencyDataPoints;
+
                 }
-
-                //LineSeries für Frequenz aktualisieren
-                lineSeriesFFT.ItemsSource = frequencyDataPoints;
-
-            }
-            else if (patient != null && patient.SampleList.Count < 512)
-            {
-                MessageBox.Show("Not enough data points available for Fourier transform. At least 512 points are required.");
+                else if (patient != null && patient.SampleList.Count < 512)
+                {
+                    MessageBox.Show("Not enough data points available for Fourier transform. At least 512 points are required.");
+                }
+                else
+                {
+                    MessageBox.Show("No patient data available for frequency display.");
+                }
             }
             else
             {
-                MessageBox.Show("No patient data available for frequency display.");
+                lineSeriesFFT.ItemsSource = null;
+
+                if (stationaryPatient != null && stationaryPatient.SampleList.Count >= 512)
+                {
+                    // Letzte 512 Punkte mit Skip
+                    double[] sampleArray = stationaryPatient.SampleList.Skip(stationaryPatient.SampleList.Count - 512).ToArray();
+
+                    // Erstellung Spektrum-Objekt und Fourier-Transformation
+                    Spektrum spektrum = new Spektrum(sampleArray.Length);
+                    double[] frequencySpectrum = spektrum.FFT(sampleArray, sampleArray.Length);
+
+                    // Frequenzdaten binden an neue lineSeries
+                    ObservableCollection<KeyValuePair<int, double>> frequencyDataPoints = new ObservableCollection<KeyValuePair<int, double>>();
+                    double samplingRate = 6000;
+                    for (int i = 0; i < frequencySpectrum.Length; i++)
+                    {
+                        double frequency = i * (samplingRate / sampleArray.Length); // Frequenz berechnen
+                        frequencyDataPoints.Add(new KeyValuePair<int, double>((int)frequency, frequencySpectrum[i]));
+                    }
+
+                    //LineSeries für Frequenz aktualisieren
+                    lineSeriesFFT.ItemsSource = frequencyDataPoints;
+
+                }
+                else if (stationaryPatient != null && stationaryPatient.SampleList.Count < 512)
+                {
+                    MessageBox.Show("Not enough data points available for Fourier transform. At least 512 points are required.");
+                }
+                else
+                {
+                    MessageBox.Show("No patient data available for frequency display.");
+                }
             }
         }
         private void ButtonLoadImage_Click(object sender, RoutedEventArgs e)
@@ -588,6 +861,37 @@ namespace PatientMonitor
         private void TextBoxMaxImages_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !int.TryParse(e.Text, out _);
+        }
+
+        private void TextBoxRoomNumber_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBoxRoomNumber.Text = "";
+            TextBoxRoomNumber.Foreground = Brushes.Black;
+        }
+
+        private void TextBoxRoomNumber_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (TextBoxRoomNumber.Text == "")
+            {
+                TextBoxRoomNumber.Text = "Enter room number";
+                TextBoxRoomNumber.Foreground = Brushes.Red;
+            }
+        }
+
+        private void TextBoxRoomNumber_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !int.TryParse(e.Text, out _);
+        }
+
+        private void TextBoxRoomNumber_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            int.TryParse(TextBoxRoomNumber.Text, out int roomNumberTempTemp);
+            roomNumberTemp = roomNumberTempTemp.ToString();
+        }
+
+        private void ComboBoxClinic_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            clinic = (MonitorConstants.clinic)ComboBoxClinic.SelectedIndex;
         }
     }
 }

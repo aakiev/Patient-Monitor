@@ -15,5 +15,17 @@ namespace PatientMonitor
             EMG = 2,
             Respiration = 3
         }
+
+        public enum clinic
+        {
+            Cardiology = 0,
+            Neurology = 1,
+            Orthopedics = 2,
+            Surgery = 3,
+            Dermatology = 4,
+            Radiology = 5,
+            Oftalmology = 6,
+            Pediatrics = 7,
+        }
     }
 }

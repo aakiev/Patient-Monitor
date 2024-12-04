@@ -78,11 +78,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Database.cs" />
     <Compile Include="IPhysioParameters.cs" />
     <Compile Include="MRImaging.cs" />
     <Compile Include="PhysioParameters.cs" />
     <Compile Include="Respiration.cs" />
     <Compile Include="Spektrum.cs" />
+    <Compile Include="StationaryPatient.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
