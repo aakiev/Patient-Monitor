@@ -132,8 +132,8 @@
             <Button x:Name="ButtonFourierTransformation" Content="Transform" HorizontalAlignment="Left" Margin="1293,503,0,0" VerticalAlignment="Top" Width="75" Click="ButtonFourierTransformation_Click" Height="25"/>
             <TextBox x:Name="TextBoxMaxImages" HorizontalAlignment="Left" Height="29" Margin="1278,39,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="55" FontSize="20" IsEnabled="False" TextChanged="TextBoxMaxImages_TextChanged" GotFocus="TextBoxMaxImages_GotFocus" LostFocus="TextBoxMaxImages_LostFocus" PreviewTextInput="TextBoxMaxImages_PreviewTextInput"/>
             <TextBlock x:Name="TextBlockMaxImages" HorizontalAlignment="Left" Margin="1274,21,0,0" TextWrapping="Wrap" Text="MaxImages" VerticalAlignment="Top" Width="73"/>
-            <RadioButton x:Name="RadioButtonAmbulatory" Content="Ambulatory" HorizontalAlignment="Left" Margin="202,443,0,0" VerticalAlignment="Top" FontSize="14"/>
-            <RadioButton x:Name="RadioButtonStationary" Content="Stationary" HorizontalAlignment="Left" Margin="304,443,0,0" VerticalAlignment="Top" FontSize="14"/>
+            <RadioButton x:Name="RadioButtonAmbulatory" Content="Ambulatory" HorizontalAlignment="Left" Margin="202,443,0,0" VerticalAlignment="Top" FontSize="14" Checked="RadioButtonAmbulatory_Checked"/>
+            <RadioButton x:Name="RadioButtonStationary" Content="Stationary" HorizontalAlignment="Left" Margin="304,443,0,0" VerticalAlignment="Top" FontSize="14" Checked="RadioButtonStationary_Checked"/>
             <ComboBox x:Name="ComboBoxClinic" HorizontalAlignment="Left" Margin="220,554,0,0" VerticalAlignment="Top" Width="148" Height="26" SelectedIndex="0" IsSynchronizedWithCurrentItem="False" SelectionChanged="ComboBoxClinic_SelectionChanged">
                 <ComboBoxItem Content="Cardiology"/>
                 <ComboBoxItem Content="Neurology"/>
@@ -158,9 +158,19 @@
             <Button x:Name="ButtonChooseDir" Content="Choose Dir" HorizontalAlignment="Left" Margin="25,61,0,0" VerticalAlignment="Top" Width="75" Height="33" Grid.Row="1" IsEnabled="False"/>
             <Button x:Name="ButtonLoadDB" Content="Load DB" HorizontalAlignment="Left" Margin="119,61,0,0" VerticalAlignment="Top" Width="91" Height="33" Grid.Row="1"/>
             <Button x:Name="ButtonSaveDB" Content="Save DB" HorizontalAlignment="Left" Margin="225,61,0,0" VerticalAlignment="Top" Width="75" Height="33" Grid.Row="1" IsEnabled="False"/>
-            <RadioButton x:Name="RadioButtonParameter" Content="Parameter" HorizontalAlignment="Left" Margin="317,61,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-            <RadioButton x:Name="RadioButtonDataBase" Content="Data base" HorizontalAlignment="Left" Margin="317,79,0,0" Grid.Row="1" VerticalAlignment="Top" RenderTransformOrigin="0.282,0.933"/>
+            <RadioButton x:Name="RadioButtonParameter" GroupName="Display" Content="Parameter" HorizontalAlignment="Left" Margin="317,61,0,0" Grid.Row="1" VerticalAlignment="Top" Checked="RadioButtonParameter_Checked" IsEnabled="False"/>
+            <RadioButton x:Name="RadioButtonDataBase" GroupName="Display" Content="Data base" HorizontalAlignment="Left" Margin="317,79,0,0" Grid.Row="1" VerticalAlignment="Top" RenderTransformOrigin="0.282,0.933" IsChecked="True" Checked="RadioButtonDataBase_Checked"/>
         </Grid>
+        <DataGrid x:Name="PatientData" HorizontalAlignment="Left" Height="394" Margin="10,10,0,0" VerticalAlignment="Top" Width="794" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding ColumnName}" Width="*"/>
+                <DataGridTextColumn Header="Age" Binding="{Binding ColumnAge}" Width="*"/>
+                <DataGridTextColumn Header="Clinic" Binding="{Binding ColumnClinic}" Width="*"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding ColumnType}" Width="*"/>
+                <DataGridTextColumn Header="Room" Binding="{Binding ColumnRoom}" Width="*"/>
+                <DataGridTextColumn Header="Date" Binding="{Binding ColumnDate}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
 
     </Grid>
 </Window>

@@ -48,6 +48,7 @@ namespace PatientMonitor
         double highAlarmTemp = 0;
         bool wasPatientCreated = false;
         string roomNumberTemp;
+        bool timerStarted = false;
 
         public MainWindow()
         {
@@ -63,7 +64,16 @@ namespace PatientMonitor
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            displayTime();
+            if(RadioButtonParameter.IsChecked == true)
+            {
+                PatientData.Visibility = Visibility.Hidden;
+                displayTime();
+            } else if(RadioButtonDataBase.IsChecked == true)
+            {
+                PatientData.Visibility = Visibility.Visible;
+                displayDatabase();
+            }
+
         }
 
         private void displayTime()
@@ -229,6 +239,7 @@ namespace PatientMonitor
                     database.AddPatient(patient);
                     wasPatientCreated = true;
                     buttonStartSimulation.IsEnabled = true;
+                    displayDatabase();
 
                 } else if (RadioButtonStationary.IsChecked == true){
 
@@ -239,6 +250,7 @@ namespace PatientMonitor
                     wasPatientCreated = true;
                     buttonStartSimulation.IsEnabled = true;
                     patient = stationaryPatient;
+                    displayDatabase();
                 }
             }
             else
@@ -251,6 +263,7 @@ namespace PatientMonitor
         private void buttonStartSimulation_Click(object sender, RoutedEventArgs e)
         {
             timer.Start();
+            timerStarted = true;
             SliderAmplitudeValue.IsEnabled = true;
             TextBoxFrequencyValue.IsEnabled = true;
             ComboBoxHarmonics.IsEnabled = true;
@@ -258,6 +271,7 @@ namespace PatientMonitor
             ButtonLoadImage.IsEnabled = true;
             TextBoxHighAlarmValue.IsEnabled = true;
             TextBoxLowAlarmValue.IsEnabled = true;
+            RadioButtonParameter.IsEnabled = true;
         }
 
         private void buttonQuit_Click(object sender, RoutedEventArgs e)
@@ -640,6 +654,65 @@ namespace PatientMonitor
         private void ComboBoxClinic_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             clinic = (MonitorConstants.clinic)ComboBoxClinic.SelectedIndex;
+        }
+
+        private void RadioButtonAmbulatory_Checked(object sender, RoutedEventArgs e)
+        {
+            TextBoxRoomNumber.IsEnabled = false;
+            TextBoxRoomNumber.Text = " /";
+        }
+
+        private void RadioButtonStationary_Checked(object sender, RoutedEventArgs e)
+        {
+            TextBoxRoomNumber.IsEnabled = true;
+            TextBoxRoomNumber.Text = "Enter room number";
+        }
+
+        private void displayDatabase()
+        {
+            PatientData.Items.Clear();
+
+            foreach(var patient in database.Data)
+            {
+                if(patient is StationaryPatient stationaryPatient)
+                {
+                    PatientData.Items.Add(new
+                    {
+                        ColumnName = stationaryPatient.PatientName,
+                        ColumnAge = stationaryPatient.Age,
+                        ColumnClinic = stationaryPatient.Clinictype,
+                        ColumnType = "Stationary",
+                        ColumnRoom = stationaryPatient.RoomNumber,
+                        ColumnDate = stationaryPatient.DateOfStudy.ToString("yyyy-MM-dd")
+                    }) ;
+                } else if(patient is Patient patient1){
+
+                    PatientData.Items.Add(new
+                    {
+                        ColumnName = patient1.PatientName,
+                        ColumnAge = patient1.Age,
+                        ColumnClinic = patient1.Clinictype,
+                        ColumnType = "Ambulatory",
+                        ColumnRoom = " / ",
+                        ColumnDate = patient1.DateOfStudy.ToString("yyyy-MM-dd")
+                    });
+                }
+            }
+        }
+
+        private void RadioButtonParameter_Checked(object sender, RoutedEventArgs e)
+        {
+            PatientData.Visibility = Visibility.Hidden;
+            if (timerStarted) timer.Start();
+        }
+
+        private void RadioButtonDataBase_Checked(object sender, RoutedEventArgs e)
+        {
+            if (timerStarted)
+            {
+                timer.Stop();
+                PatientData.Visibility = Visibility.Visible;
+            }
         }
     }
 }
