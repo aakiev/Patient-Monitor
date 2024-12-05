@@ -683,7 +683,7 @@ namespace PatientMonitor
                         ColumnClinic = stationaryPatient.Clinictype,
                         ColumnType = "Stationary",
                         ColumnRoom = stationaryPatient.RoomNumber,
-                        ColumnDate = stationaryPatient.DateOfStudy.ToString("yyyy-MM-dd")
+                        ColumnDate = stationaryPatient.DateOfStudy.ToString("dd.MM.yyyy")
                     }) ;
                 } else if(patient is Patient patient1){
 
@@ -694,7 +694,7 @@ namespace PatientMonitor
                         ColumnClinic = patient1.Clinictype,
                         ColumnType = "Ambulatory",
                         ColumnRoom = " / ",
-                        ColumnDate = patient1.DateOfStudy.ToString("yyyy-MM-dd")
+                        ColumnDate = patient1.DateOfStudy.ToString("dd.MM.yyyy")
                     });
                 }
             }
