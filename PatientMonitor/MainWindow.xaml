@@ -155,11 +155,10 @@
                 <ComboBoxItem Content="Oftalmology"/>
                 <ComboBoxItem Content="Pediatrics"/>
             </ComboBox>
-            <Button x:Name="ButtonChooseDir" Content="Choose Dir" HorizontalAlignment="Left" Margin="25,61,0,0" VerticalAlignment="Top" Width="75" Height="33" Grid.Row="1" IsEnabled="False"/>
-            <Button x:Name="ButtonLoadDB" Content="Load DB" HorizontalAlignment="Left" Margin="119,61,0,0" VerticalAlignment="Top" Width="91" Height="33" Grid.Row="1"/>
-            <Button x:Name="ButtonSaveDB" Content="Save DB" HorizontalAlignment="Left" Margin="225,61,0,0" VerticalAlignment="Top" Width="75" Height="33" Grid.Row="1" IsEnabled="False"/>
-            <RadioButton x:Name="RadioButtonParameter" GroupName="Display" Content="Parameter" HorizontalAlignment="Left" Margin="317,61,0,0" Grid.Row="1" VerticalAlignment="Top" Checked="RadioButtonParameter_Checked" IsEnabled="False"/>
-            <RadioButton x:Name="RadioButtonDataBase" GroupName="Display" Content="Data base" HorizontalAlignment="Left" Margin="317,79,0,0" Grid.Row="1" VerticalAlignment="Top" RenderTransformOrigin="0.282,0.933" IsChecked="True" Checked="RadioButtonDataBase_Checked"/>
+            <Button x:Name="ButtonLoadDB" Content="Load DB" HorizontalAlignment="Left" Margin="53,61,0,0" VerticalAlignment="Top" Width="106" Height="33" Grid.Row="1" Click="ButtonLoadDB_Click"/>
+            <Button x:Name="ButtonSaveDB" Content="Save DB" HorizontalAlignment="Left" Margin="174,61,0,0" VerticalAlignment="Top" Width="101" Height="33" Grid.Row="1" Click="ButtonSaveDB_Click"/>
+            <RadioButton x:Name="RadioButtonParameter" GroupName="Display" Content="Parameter" HorizontalAlignment="Left" Margin="307,61,0,0" Grid.Row="1" VerticalAlignment="Top" Checked="RadioButtonParameter_Checked" IsEnabled="False"/>
+            <RadioButton x:Name="RadioButtonDataBase" GroupName="Display" Content="Data base" HorizontalAlignment="Left" Margin="307,79,0,0" Grid.Row="1" VerticalAlignment="Top" RenderTransformOrigin="0.282,0.933" IsChecked="True" Checked="RadioButtonDataBase_Checked"/>
         </Grid>
         <DataGrid x:Name="PatientData" HorizontalAlignment="Left" Height="394" Margin="10,10,0,0" VerticalAlignment="Top" Width="794" AutoGenerateColumns="False">
             <DataGrid.Columns>

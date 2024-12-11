@@ -714,5 +714,72 @@ namespace PatientMonitor
                 PatientData.Visibility = Visibility.Visible;
             }
         }
+
+        private void ButtonLoadDB_Click(object sender, RoutedEventArgs e)
+        {
+            string file = string.Empty;
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Text Files (*.txt)|*.text|All files (*.*)|*.*";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                file = openFileDialog.FileName;
+            }
+
+            database.LoadData(file);
+
+            if (database.Data.Count > 0)
+            {
+                // Den letzten Patienten auswählen
+                patient = database.Data.Last();
+
+                // Parameter auf ECG setzen
+                parameter = MonitorConstants.Parameter.ECG;
+                ComboBoxParameters.SelectedIndex = (int)MonitorConstants.Parameter.ECG;
+
+                // Werte in der GUI aktualisieren
+                UpdateGUIWithPatientData(patient);
+            }
+
+            displayDatabase();
+        }
+
+        private void UpdateGUIWithPatientData(Patient selectedPatient)
+        {
+            if (selectedPatient != null)
+            {
+                SliderAmplitudeValue.Value = selectedPatient.ECGAmplitude;
+                TextBoxFrequencyValue.Text = selectedPatient.ECGFrequency.ToString();
+
+                // Harmonics (falls ECG als Parameter)
+                if (parameter == MonitorConstants.Parameter.ECG)
+                {
+                    ComboBoxHarmonics.SelectedIndex = selectedPatient.ECGHarmonics;
+                }
+                else
+                {
+                    ComboBoxHarmonics.SelectedIndex = -1; // Deaktivieren, falls nicht ECG
+                }
+
+                TextBoxLowAlarmValue.Text = selectedPatient.ECGLowAlarm.ToString();
+                TextBlockDisplayLowAlarm.Text = selectedPatient.ECGLowAlarmString;
+                TextBoxHighAlarmValue.Text = selectedPatient.ECGHighAlarm.ToString();
+                TextBlockDisplayHighAlarm.Text = selectedPatient.ECGHighAlarmString;
+            }
+        }
+
+        private void ButtonSaveDB_Click(object sender, RoutedEventArgs e)
+        {
+            string file = string.Empty;
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Text Files (*.txt)|*.text|All files (*.*)|*.*";
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                file = saveFileDialog.FileName;
+            }
+
+            database.SaveData(file);
+        }
     }
 }
