@@ -81,6 +81,7 @@
     <Compile Include="Database.cs" />
     <Compile Include="IPhysioParameters.cs" />
     <Compile Include="MRImaging.cs" />
+    <Compile Include="PatientComparer.cs" />
     <Compile Include="PhysioParameters.cs" />
     <Compile Include="Respiration.cs" />
     <Compile Include="Spektrum.cs" />

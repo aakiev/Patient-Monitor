@@ -235,22 +235,26 @@ namespace PatientMonitor
                 {
                     clinic = (MonitorConstants.clinic)ComboBoxClinic.SelectedIndex;
                     patient = new Patient(patientNameTemp, dateTemp, patientAgeTemp, amplitudeValue, frequencyTemp, harmonicsTemp,clinic);
-                    MessageBox.Show("Patient " + patientNameTemp + " was created!");
                     database.AddPatient(patient);
                     wasPatientCreated = true;
                     buttonStartSimulation.IsEnabled = true;
+                    ComboBoxClinicSort.SelectedIndex = -1;
+                    RadioButtonDataBase.IsChecked = true;
                     displayDatabase();
+                    MessageBox.Show("Patient " + patientNameTemp + " was created!");
 
                 } else if (RadioButtonStationary.IsChecked == true){
 
                     clinic = (MonitorConstants.clinic)ComboBoxClinic.SelectedIndex;
                     stationaryPatient = new StationaryPatient(patientNameTemp, dateTemp, patientAgeTemp, amplitudeValue, frequencyTemp, harmonicsTemp, clinic, roomNumberTemp);
-                    MessageBox.Show("Stationary Patient " + patientNameTemp + " was created!");
                     database.AddPatient(stationaryPatient);
                     wasPatientCreated = true;
                     buttonStartSimulation.IsEnabled = true;
+                    ComboBoxClinicSort.SelectedIndex = -1;
+                    RadioButtonDataBase.IsChecked = true;
                     patient = stationaryPatient;
                     displayDatabase();
+                    MessageBox.Show("Stationary Patient " + patientNameTemp + " was created!");
                 }
             }
             else
@@ -811,6 +815,18 @@ namespace PatientMonitor
             }
 
             database.SaveData(file);
+        }
+
+        private void ComboBoxClinicSort_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            PatientComparer pc = new PatientComparer();
+            pc.CA = (MonitorConstants.compareAfter)ComboBoxClinicSort.SelectedIndex;
+
+            if (database != null)
+            {
+                database.Data.Sort(pc);
+                displayDatabase();
+            }
         }
     }
 }
