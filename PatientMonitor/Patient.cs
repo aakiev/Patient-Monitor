@@ -35,6 +35,10 @@ namespace PatientMonitor
             set { clinic = value; }
         }
 
+        private Guid id;
+        public Guid ID { get => id; set => id = value; }
+
+
         public double NextSample(double timeIndex, MonitorConstants.Parameter parameter)
         {
             double NextSample = 0.0;
@@ -63,6 +67,9 @@ namespace PatientMonitor
 
         public Patient(string patientName, DateTime dateOfStudy, int age, double amplitude, double frequency, int harmonics, MonitorConstants.clinic clinic)
         {
+
+            id = Guid.NewGuid(); // Generiere eine eindeutige ID für jeden Patienten
+
             ecg = new ECG(amplitude, frequency, harmonics);
             eeg = new EEG(amplitude, frequency);
             emg = new EMG(amplitude, frequency);

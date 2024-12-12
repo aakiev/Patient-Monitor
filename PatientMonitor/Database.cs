@@ -34,6 +34,7 @@ namespace PatientMonitor
                         writer.Write(data.Count);
                         foreach (Patient patient in data)
                         {
+                            writer.Write(patient.ID.ToString()); // Schreibe die ID des Patienten
                             writer.Write(patient is StationaryPatient);
                             writer.Write(patient.PatientName);
                             writer.Write(patient.Age);
@@ -86,6 +87,7 @@ namespace PatientMonitor
 
                         for (int i = 0; i < patientCount; i++)
                         {
+                            Guid id = Guid.Parse(reader.ReadString()); // ID einlesen
                             bool isStationary = reader.ReadBoolean();
                             string patientName = reader.ReadString();
                             int age = reader.ReadInt32();
@@ -120,6 +122,9 @@ namespace PatientMonitor
                                 StationaryPatient stationaryPatient = new StationaryPatient(
                                     patientName, dateOfStudy, age, ecgAmplitude, ecgFrequency, ecgHarmonics, clinic, roomNumber
                                 );
+
+                                stationaryPatient.ID = id; // Weise die ID zu
+
                                 stationaryPatient.ECGAmplitude = ecgAmplitude;
                                 stationaryPatient.ECGFrequency = ecgFrequency;
                                 stationaryPatient.ECGHarmonics = ecgHarmonics;
@@ -148,6 +153,8 @@ namespace PatientMonitor
                                 Patient patient = new Patient(
                                     patientName, dateOfStudy, age, ecgAmplitude, ecgFrequency, ecgHarmonics, clinic
                                 );
+
+                                patient.ID = id; // Weise die ID zu
 
                                 patient.ECGAmplitude = ecgAmplitude;
                                 patient.ECGFrequency = ecgFrequency;

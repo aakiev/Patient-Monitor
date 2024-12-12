@@ -37,6 +37,7 @@ namespace PatientMonitor
         MonitorConstants.clinic clinic = MonitorConstants.clinic.Cardiology;
         private MRImaging mrImaging = new MRImaging();
         Database database;
+        private Guid _activePatientId = Guid.Empty;
 
         string patientNameTemp;
         int patientAgeTemp;
@@ -682,6 +683,7 @@ namespace PatientMonitor
                 {
                     PatientData.Items.Add(new
                     {
+                        ColumnID = stationaryPatient.ID.ToString(),
                         ColumnName = stationaryPatient.PatientName,
                         ColumnAge = stationaryPatient.Age,
                         ColumnClinic = stationaryPatient.Clinictype,
@@ -693,6 +695,7 @@ namespace PatientMonitor
 
                     PatientData.Items.Add(new
                     {
+                        ColumnID = patient1.ID.ToString(),
                         ColumnName = patient1.PatientName,
                         ColumnAge = patient1.Age,
                         ColumnClinic = patient1.Clinictype,
@@ -717,6 +720,8 @@ namespace PatientMonitor
                 timer.Stop();
                 PatientData.Visibility = Visibility.Visible;
             }
+
+            HighlightActivePatient(patient);
         }
 
         private void ButtonLoadDB_Click(object sender, RoutedEventArgs e)
@@ -747,6 +752,9 @@ namespace PatientMonitor
 
                 // Werte in der GUI aktualisieren
                 UpdateGUIWithPatientData(patient);
+
+                // Den aktiven Patienten hervorheben
+                HighlightActivePatient(patient);
             }
 
             displayDatabase();
@@ -826,6 +834,86 @@ namespace PatientMonitor
             {
                 database.Data.Sort(pc);
                 displayDatabase();
+            }
+        }
+
+        private void HighlightActivePatient(Patient activePatient)
+        {
+            if (activePatient == null) return;
+
+            Guid activePatientId = activePatient.ID;
+            _activePatientId = activePatientId; // Speichern der aktiven Patienten-ID
+
+            foreach (var item in PatientData.Items)
+            {
+                dynamic data = item;
+                if (Guid.TryParse(data.ColumnID.ToString(), out Guid parsedID))
+                {
+                    DataGridRow row = PatientData.ItemContainerGenerator.ContainerFromItem(item) as DataGridRow;
+                    if (row != null)
+                    {
+                        if (parsedID == activePatientId)
+                        {
+                            row.Background = Brushes.LightGreen;
+                        }
+                        else
+                        {
+                            row.Background = Brushes.White;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private void PatientData_LoadingRow(object sender, DataGridRowEventArgs e)
+        {
+            dynamic data = e.Row.Item;
+            if (Guid.TryParse(data.ColumnID.ToString(), out Guid parsedID))
+            {
+                if (parsedID == _activePatientId)
+                {
+                    e.Row.Background = Brushes.LightGreen;
+                }
+                else
+                {
+                    e.Row.Background = Brushes.White;
+                }
+            }
+        }
+
+        private void ButtonSelectPatient_Click(object sender, RoutedEventArgs e)
+        {
+            if (PatientData.SelectedItem != null)
+            {
+                dynamic selectedPatientData = PatientData.SelectedItem;
+                Guid selectedPatientID = Guid.Parse(selectedPatientData.ColumnID);
+                Patient selectedPatient = database.Data.FirstOrDefault(p => p.ID == selectedPatientID);
+
+                if (selectedPatient != null)
+                {
+                    // Patient als aktuell aktiven setzen
+                    patient = selectedPatient;
+
+                    // GUI mit Patientendaten aktualisieren
+                    UpdateGUIWithPatientData(selectedPatient);
+
+                    // Damit die Zeilen generiert sind
+                    PatientData.ScrollIntoView(PatientData.SelectedItem);
+                    PatientData.UpdateLayout();
+
+                    // Patient in DataGrid markieren
+                    HighlightActivePatient(selectedPatient);
+
+                }
+                else
+                {
+                    MessageBox.Show("Selected patient not found in the database.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("No patient selected.");
             }
         }
     }
