@@ -728,8 +728,12 @@ namespace PatientMonitor
 
             database.LoadData(file);
 
+
             if (database.Data.Count > 0)
             {
+                wasPatientCreated = true;
+                buttonStartSimulation.IsEnabled = true;
+
                 // Den letzten Patienten auswählen
                 patient = database.Data.Last();
 
@@ -762,9 +766,36 @@ namespace PatientMonitor
                 }
 
                 TextBoxLowAlarmValue.Text = selectedPatient.ECGLowAlarm.ToString();
-                TextBlockDisplayLowAlarm.Text = selectedPatient.ECGLowAlarmString;
                 TextBoxHighAlarmValue.Text = selectedPatient.ECGHighAlarm.ToString();
-                TextBlockDisplayHighAlarm.Text = selectedPatient.ECGHighAlarmString;
+
+                PatientNameTextBox.Text = selectedPatient.PatientName;
+                PatientAgeTextBox.Text = selectedPatient.Age.ToString();
+                DatePickerDate.Text = selectedPatient.DateOfStudy.ToString();
+
+
+                if(selectedPatient is StationaryPatient stationaryPatient)
+                {
+                    RadioButtonStationary.IsChecked = true;
+                    TextBoxRoomNumber.Text = stationaryPatient.RoomNumber;
+                }
+                else
+                {
+                    RadioButtonAmbulatory.IsChecked = true;
+                }
+
+                switch (selectedPatient.Clinic)
+                {
+                    case MonitorConstants.clinic.Cardiology:    ComboBoxClinic.SelectedIndex = 0; break;
+                    case MonitorConstants.clinic.Dermatology:   ComboBoxClinic.SelectedIndex = 4; break;
+                    case MonitorConstants.clinic.Neurology:     ComboBoxClinic.SelectedIndex = 1; break;
+                    case MonitorConstants.clinic.Oftalmology:   ComboBoxClinic.SelectedIndex = 6; break;
+                    case MonitorConstants.clinic.Orthopedics:   ComboBoxClinic.SelectedIndex = 2; break;
+                    case MonitorConstants.clinic.Pediatrics:    ComboBoxClinic.SelectedIndex = 7; break;
+                    case MonitorConstants.clinic.Radiology:     ComboBoxClinic.SelectedIndex = 5; break;
+                    case MonitorConstants.clinic.Surgery:       ComboBoxClinic.SelectedIndex = 3; break;
+                    default: break;
+                }
+
             }
         }
 
