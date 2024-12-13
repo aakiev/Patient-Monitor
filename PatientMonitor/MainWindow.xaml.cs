@@ -904,6 +904,7 @@ namespace PatientMonitor
 
                     // Patient in DataGrid markieren
                     HighlightActivePatient(selectedPatient);
+                    displayDatabase();
 
                 }
                 else
