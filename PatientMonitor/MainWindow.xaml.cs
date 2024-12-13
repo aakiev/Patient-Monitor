@@ -17,11 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using Microsoft.Win32;  //For OpenFileDialog
-
-
-
-
+using Microsoft.Win32;
 
 
 namespace PatientMonitor
@@ -30,7 +26,7 @@ namespace PatientMonitor
     {
         private ObservableCollection<KeyValuePair<int, double>> dataPoints;
         private DispatcherTimer timer;
-        private int index = 0;
+
         Patient patient;
         StationaryPatient stationaryPatient;
         MonitorConstants.Parameter parameter = MonitorConstants.Parameter.ECG;
@@ -39,6 +35,7 @@ namespace PatientMonitor
         Database database;
         private Guid _activePatientId = Guid.Empty;
 
+        private int index = 0;
         string patientNameTemp;
         int patientAgeTemp;
         DateTime dateTemp;
@@ -47,9 +44,12 @@ namespace PatientMonitor
         double amplitudeValue = 0;
         double lowAlarmTemp = 0;
         double highAlarmTemp = 0;
-        bool wasPatientCreated = false;
         string roomNumberTemp;
+
+        bool wasPatientCreated = false;
         bool timerStarted = false;
+        bool isDatabaseSaved = true;
+
 
         public MainWindow()
         {
@@ -238,9 +238,22 @@ namespace PatientMonitor
                     patient = new Patient(patientNameTemp, dateTemp, patientAgeTemp, amplitudeValue, frequencyTemp, harmonicsTemp,clinic);
                     database.AddPatient(patient);
                     wasPatientCreated = true;
+                    isDatabaseSaved = false;
                     buttonStartSimulation.IsEnabled = true;
                     ComboBoxClinicSort.SelectedIndex = -1;
                     RadioButtonDataBase.IsChecked = true;
+
+                    if (wasPatientCreated)
+                    {
+                        SliderAmplitudeValue.Value = 0;
+                        TextBoxFrequencyValue.Text = "0";
+                        TextBoxLowAlarmValue.Text = "0";
+                        TextBoxHighAlarmValue.Text = "0";
+                        ComboBoxParameters.SelectedIndex = 0;
+                        ComboBoxHarmonics.SelectedIndex = 0;
+                    }
+
+                    HighlightActivePatient(patient);
                     displayDatabase();
                     MessageBox.Show("Patient " + patientNameTemp + " was created!");
 
@@ -250,10 +263,23 @@ namespace PatientMonitor
                     stationaryPatient = new StationaryPatient(patientNameTemp, dateTemp, patientAgeTemp, amplitudeValue, frequencyTemp, harmonicsTemp, clinic, roomNumberTemp);
                     database.AddPatient(stationaryPatient);
                     wasPatientCreated = true;
+                    isDatabaseSaved = false;
                     buttonStartSimulation.IsEnabled = true;
                     ComboBoxClinicSort.SelectedIndex = -1;
                     RadioButtonDataBase.IsChecked = true;
                     patient = stationaryPatient;
+
+                    if (wasPatientCreated)
+                    {
+                        SliderAmplitudeValue.Value = 0;
+                        TextBoxFrequencyValue.Text = "0";
+                        TextBoxLowAlarmValue.Text = "0";
+                        TextBoxHighAlarmValue.Text = "0";
+                        ComboBoxParameters.SelectedIndex = 0;
+                        ComboBoxHarmonics.SelectedIndex = 0;
+                    }
+
+                    HighlightActivePatient(patient);
                     displayDatabase();
                     MessageBox.Show("Stationary Patient " + patientNameTemp + " was created!");
                 }
@@ -268,6 +294,9 @@ namespace PatientMonitor
         private void buttonStartSimulation_Click(object sender, RoutedEventArgs e)
         {
             timer.Start();
+            HighlightActivePatient(patient);
+            displayDatabase();
+
             timerStarted = true;
             SliderAmplitudeValue.IsEnabled = true;
             TextBoxFrequencyValue.IsEnabled = true;
@@ -726,6 +755,24 @@ namespace PatientMonitor
 
         private void ButtonLoadDB_Click(object sender, RoutedEventArgs e)
         {
+
+            if (!isDatabaseSaved)
+            {
+                // Zeige eine Warnung, falls die aktuelle Datenbank nicht gespeichert ist
+                MessageBoxResult result = MessageBox.Show(
+                    "Sie haben die aktuelle Datenbank nicht gespeichert, wollen Sie wirklich fortfahren?",
+                    "Alarm!",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning
+                );
+
+                // Abbrechen, falls der Nutzer nicht fortfahren möchte
+                if (result == MessageBoxResult.No)
+                {
+                    return;
+                }
+            }
+
             string file = string.Empty;
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Text Files (*.txt)|*.text|All files (*.*)|*.*";
@@ -757,6 +804,7 @@ namespace PatientMonitor
                 HighlightActivePatient(patient);
             }
 
+            isDatabaseSaved = true;
             displayDatabase();
         }
 
@@ -822,6 +870,7 @@ namespace PatientMonitor
                 file = saveFileDialog.FileName;
             }
 
+            isDatabaseSaved = true;
             database.SaveData(file);
         }
 
@@ -898,12 +947,13 @@ namespace PatientMonitor
                     // GUI mit Patientendaten aktualisieren
                     UpdateGUIWithPatientData(selectedPatient);
 
-                    // Damit die Zeilen generiert sind
+                    // Damit die Zeilen generiert sind, wenn es so viele Reihen gibt, dass man durchscrollen muss
                     PatientData.ScrollIntoView(PatientData.SelectedItem);
                     PatientData.UpdateLayout();
 
                     // Patient in DataGrid markieren
                     HighlightActivePatient(selectedPatient);
+
                     displayDatabase();
 
                 }
