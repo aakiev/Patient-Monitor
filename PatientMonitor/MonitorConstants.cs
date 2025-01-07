@@ -6,34 +6,47 @@ using System.Threading.Tasks;
 
 namespace PatientMonitor
 {
+    /// <summary>
+    /// Statische Klasse zur Definition von Konstanten und Enumerationen, die in der gesamten Anwendung verwendet werden.
+    /// </summary>
     internal static class MonitorConstants
     {
+        /// <summary>
+        /// Aufzählung der verschiedenen physiologischen Parameter, die überwacht werden können.
+        /// </summary>
         public enum Parameter
         {
-            ECG = 0,
-            EEG = 1,
-            EMG = 2,
-            Respiration = 3
+            ECG = 0,         // Elektrokardiogramm
+            EEG = 1,         // Elektroenzephalogramm
+            EMG = 2,         // Elektromyogramm
+            Respiration = 3  // Atmung
         }
 
+        /// <summary>
+        /// Aufzählung der verfügbaren Kliniken, in denen die Patienten behandelt werden.
+        /// </summary>
         public enum clinic
         {
-            Cardiology = 0,
-            Neurology = 1,
-            Orthopedics = 2,
-            Surgery = 3,
-            Dermatology = 4,
-            Radiology = 5,
-            Oftalmology = 6,
-            Pediatrics = 7,
+            Cardiology = 0,   // Kardiologie
+            Neurology = 1,    // Neurologie
+            Orthopedics = 2,  // Orthopädie
+            Surgery = 3,      // Chirurgie
+            Dermatology = 4,  // Dermatologie
+            Radiology = 5,    // Radiologie
+            Oftalmology = 6,  // Augenheilkunde
+            Pediatrics = 7    // Pädiatrie
         }
+
+        /// <summary>
+        /// Aufzählung der Kriterien, nach denen Patienten sortiert werden können.
+        /// </summary>
         public enum compareAfter
         {
-            Name = 0,
-            Age = 1,
-            Clinic = 2,
-            Ambulatory = 3,
-            Stationary = 4,
+            Name = 0,         // Sortierung nach Name
+            Age = 1,          // Sortierung nach Alter
+            Clinic = 2,       // Sortierung nach Klinik
+            Ambulatory = 3,   // Sortierung nach ambulanten Patienten
+            Stationary = 4    // Sortierung nach stationären Patienten
         }
     }
 }
