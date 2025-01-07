@@ -1160,7 +1160,24 @@ namespace PatientMonitor
             }
         }
 
-        private void ButtonSelectPatient_Click(object sender, RoutedEventArgs e)
+        private void ButtonQuit_Click_1(object sender, RoutedEventArgs e)
+        {
+            // Zeigt eine Bestätigungsnachricht an, bevor die Anwendung beendet wird
+            MessageBoxResult result = MessageBox.Show(
+                "Are you sure you want to quit?",
+                "Confirm Quit",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question
+            );
+
+            if (result == MessageBoxResult.Yes)
+            {
+                if (timer != null && timer.IsEnabled) timer.Stop();
+                Application.Current.Shutdown();
+            }
+        }
+
+        private void PatientData_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Prüft, ob ein Patient ausgewählt wurde
             if (PatientData.SelectedItem != null)
@@ -1183,27 +1200,6 @@ namespace PatientMonitor
                 {
                     MessageBox.Show("Selected patient not found in the database.");
                 }
-            }
-            else
-            {
-                MessageBox.Show("No patient selected.");
-            }
-        }
-
-        private void ButtonQuit_Click_1(object sender, RoutedEventArgs e)
-        {
-            // Zeigt eine Bestätigungsnachricht an, bevor die Anwendung beendet wird
-            MessageBoxResult result = MessageBox.Show(
-                "Are you sure you want to quit?",
-                "Confirm Quit",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question
-            );
-
-            if (result == MessageBoxResult.Yes)
-            {
-                if (timer != null && timer.IsEnabled) timer.Stop();
-                Application.Current.Shutdown();
             }
         }
     }

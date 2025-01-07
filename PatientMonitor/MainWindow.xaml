@@ -159,11 +159,10 @@
             <Button x:Name="ButtonSaveDB" Content="Save DB" HorizontalAlignment="Left" Margin="220,61,0,0" VerticalAlignment="Top" Width="79" Height="33" Grid.Row="1" Click="ButtonSaveDB_Click"/>
             <RadioButton x:Name="RadioButtonParameter" GroupName="Display" Content="Parameter" HorizontalAlignment="Left" Margin="307,61,0,0" Grid.Row="1" VerticalAlignment="Top" Checked="RadioButtonParameter_Checked" IsEnabled="False"/>
             <RadioButton x:Name="RadioButtonDataBase" GroupName="Display" Content="Data base" HorizontalAlignment="Left" Margin="307,79,0,0" Grid.Row="1" VerticalAlignment="Top" RenderTransformOrigin="0.282,0.933" IsChecked="True" Checked="RadioButtonDataBase_Checked"/>
-            <Button x:Name="ButtonSelectPatient" Content="Select Patient" HorizontalAlignment="Left" Margin="424,67,0,0" Grid.Row="1" VerticalAlignment="Top" Width="148" Height="33" FontSize="16" Click="ButtonSelectPatient_Click"/>
             <Button x:Name="ButtonQuit" Content="Quit" HorizontalAlignment="Left" Margin="34,61,0,0" Grid.Row="1" VerticalAlignment="Top" Width="84" Height="33" Background="#FFEE6D6D" Click="ButtonQuit_Click_1"/>
         </Grid>
 
-        <DataGrid x:Name="PatientData" IsReadOnly="True" HorizontalAlignment="Left" Height="394" Margin="10,10,0,0" VerticalAlignment="Top" Width="794" AutoGenerateColumns="False" LoadingRow="PatientData_LoadingRow">
+        <DataGrid x:Name="PatientData" IsReadOnly="True" HorizontalAlignment="Left" Height="394" Margin="10,10,0,0" VerticalAlignment="Top" Width="794" AutoGenerateColumns="False" LoadingRow="PatientData_LoadingRow" SelectionChanged="PatientData_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ColumnID}" Visibility="Hidden" />
                 <DataGridTextColumn Header="Name" Binding="{Binding ColumnName}" Width="*"/>
