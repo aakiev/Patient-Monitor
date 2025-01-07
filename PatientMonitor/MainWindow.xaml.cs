@@ -24,7 +24,7 @@ namespace PatientMonitor
 {
     public partial class MainWindow : Window
     {
-        private ObservableCollection<KeyValuePair<int, double>> dataPoints;
+        private ObservableCollection<KeyValuePair<double, double>> dataPoints;
         private DispatcherTimer timer;
 
         Patient patient;
@@ -55,7 +55,7 @@ namespace PatientMonitor
         {
             InitializeComponent();
             database = new Database();
-            dataPoints = new ObservableCollection<KeyValuePair<int, double>>();
+            dataPoints = new ObservableCollection<KeyValuePair<double, double>>();
             lineSeriesTime.ItemsSource = dataPoints; // Bind the series to the data points
 
             timer = new DispatcherTimer();
@@ -85,7 +85,9 @@ namespace PatientMonitor
             // Generate datapoint
             if (patient != null)
             {
-                dataPoints.Add(new KeyValuePair<int, double>(index++, patient.NextSample(currentTimeInSeconds, parameter)));
+                dataPoints.Add(new KeyValuePair<double, double>(index/100.0, patient.NextSample(currentTimeInSeconds, parameter)));
+                index++;
+                
             }
 
             // Delete datapoints to clear the diagram
